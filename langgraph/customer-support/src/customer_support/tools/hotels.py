@@ -3,12 +3,14 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Optional, Union
 
+import fluxloop
 from langchain_core.tools import tool
 
 from .base import connect, rows_to_dicts
 
 
 @tool
+@fluxloop.trace(name="search_hotels")
 def search_hotels(
     location: Optional[str] = None,
     name: Optional[str] = None,
@@ -44,6 +46,7 @@ def search_hotels(
 
 
 @tool
+@fluxloop.trace(name="book_hotel")
 def book_hotel(hotel_id: int) -> str:
     """Book a hotel by its ID."""
     with connect() as conn:
@@ -56,6 +59,7 @@ def book_hotel(hotel_id: int) -> str:
 
 
 @tool
+@fluxloop.trace(name="update_hotel")
 def update_hotel(
     hotel_id: int,
     checkin_date: Optional[Union[datetime, date]] = None,
@@ -81,6 +85,7 @@ def update_hotel(
 
 
 @tool
+@fluxloop.trace(name="cancel_hotel")
 def cancel_hotel(hotel_id: int) -> str:
     """Cancel a hotel by its ID."""
     with connect() as conn:

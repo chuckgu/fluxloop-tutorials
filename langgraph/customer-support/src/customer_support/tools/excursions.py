@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from typing import Optional
 
+import fluxloop
 from langchain_core.tools import tool
 
 from .base import connect, rows_to_dicts
 
 
 @tool
+@fluxloop.trace(name="search_trip_recommendations")
 def search_trip_recommendations(
     location: Optional[str] = None,
     name: Optional[str] = None,
@@ -37,6 +39,7 @@ def search_trip_recommendations(
 
 
 @tool
+@fluxloop.trace(name="book_excursion")
 def book_excursion(recommendation_id: int) -> str:
     """Book an excursion by its recommendation ID."""
     with connect() as conn:
@@ -52,6 +55,7 @@ def book_excursion(recommendation_id: int) -> str:
 
 
 @tool
+@fluxloop.trace(name="update_excursion")
 def update_excursion(recommendation_id: int, details: str) -> str:
     """Update a trip recommendation's details by its ID."""
     with connect() as conn:
@@ -67,6 +71,7 @@ def update_excursion(recommendation_id: int, details: str) -> str:
 
 
 @tool
+@fluxloop.trace(name="cancel_excursion")
 def cancel_excursion(recommendation_id: int) -> str:
     """Cancel a trip recommendation by its ID."""
     with connect() as conn:

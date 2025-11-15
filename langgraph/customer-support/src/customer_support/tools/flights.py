@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Optional, Union
 
+import fluxloop
 import pytz
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
@@ -11,6 +12,7 @@ from .base import connect, rows_to_dicts
 
 
 @tool
+@fluxloop.trace(name="fetch_user_flight_information")
 def fetch_user_flight_information(config: RunnableConfig) -> list[dict]:
     """Fetch all tickets for the user along with corresponding flight information and seat assignments."""
     configuration = config.get("configurable", {})
@@ -40,6 +42,7 @@ def fetch_user_flight_information(config: RunnableConfig) -> list[dict]:
 
 
 @tool
+@fluxloop.trace(name="search_flights")
 def search_flights(
     departure_airport: Optional[str] = None,
     arrival_airport: Optional[str] = None,
@@ -78,6 +81,7 @@ def search_flights(
 
 
 @tool
+@fluxloop.trace(name="update_ticket_to_new_flight")
 def update_ticket_to_new_flight(
     ticket_no: str,
     new_flight_id: int,
@@ -142,6 +146,7 @@ def update_ticket_to_new_flight(
 
 
 @tool
+@fluxloop.trace(name="cancel_ticket")
 def cancel_ticket(ticket_no: str, *, config: RunnableConfig) -> str:
     """Cancel the user's ticket and remove it from the database."""
     configuration = config.get("configurable", {})

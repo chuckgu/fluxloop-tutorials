@@ -6,6 +6,7 @@ import sqlite3
 from pathlib import Path
 from typing import Optional
 
+import fluxloop
 import pandas as pd
 import requests
 
@@ -35,6 +36,7 @@ def _data_dir(path: Optional[Path | str] = None) -> Path:
     return _default_dir()
 
 
+@fluxloop.trace(name="download_travel_database")
 def download_database(
     *,
     overwrite: bool = False,
@@ -57,6 +59,7 @@ def download_database(
     return db_path
 
 
+@fluxloop.trace(name="refresh_travel_dates")
 def update_dates(
     db_path: Path,
     *,
@@ -116,6 +119,7 @@ def update_dates(
     return database
 
 
+@fluxloop.trace(name="prepare_travel_database")
 def prepare_database(
     *,
     overwrite: bool = False,

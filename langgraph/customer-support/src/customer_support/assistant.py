@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
+import fluxloop
+
 from langchain_core.runnables import Runnable, RunnableConfig
 
 
@@ -9,6 +11,7 @@ class Assistant:
     def __init__(self, runnable: Runnable):
         self.runnable = runnable
 
+    @fluxloop.trace(name="assistant_turn")
     def __call__(self, state: Dict[str, Any], config: RunnableConfig):
         current_state = dict(state)
         while True:

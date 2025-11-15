@@ -3,12 +3,14 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Optional, Union
 
+import fluxloop
 from langchain_core.tools import tool
 
 from .base import connect, rows_to_dicts
 
 
 @tool
+@fluxloop.trace(name="search_car_rentals")
 def search_car_rentals(
     location: Optional[str] = None,
     name: Optional[str] = None,
@@ -44,6 +46,7 @@ def search_car_rentals(
 
 
 @tool
+@fluxloop.trace(name="book_car_rental")
 def book_car_rental(rental_id: int) -> str:
     """Book a car rental by its ID."""
     with connect() as conn:
@@ -56,6 +59,7 @@ def book_car_rental(rental_id: int) -> str:
 
 
 @tool
+@fluxloop.trace(name="update_car_rental")
 def update_car_rental(
     rental_id: int,
     start_date: Optional[Union[datetime, date]] = None,
@@ -81,6 +85,7 @@ def update_car_rental(
 
 
 @tool
+@fluxloop.trace(name="cancel_car_rental")
 def cancel_car_rental(rental_id: int) -> str:
     """Cancel a car rental by its ID."""
     with connect() as conn:

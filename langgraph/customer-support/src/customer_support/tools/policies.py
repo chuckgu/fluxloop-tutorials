@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from typing import List
 
+import fluxloop
 import numpy as np
 import openai
 import requests
@@ -26,6 +27,7 @@ class VectorStoreRetriever:
         vectors = [emb.embedding for emb in embeddings.data]
         return cls(docs, vectors, oai_client)
 
+    @fluxloop.trace(name="policy_vector_query")
     def query(self, query: str, k: int = 5) -> List[dict]:
         embed = self._client.embeddings.create(
             model="text-embedding-3-small",
@@ -43,6 +45,7 @@ class VectorStoreRetriever:
 _retriever: VectorStoreRetriever | None = None
 
 
+@fluxloop.trace(name="load_policy_retriever")
 def _get_retriever() -> VectorStoreRetriever:
     global _retriever
     if _retriever is not None:
@@ -58,6 +61,7 @@ def _get_retriever() -> VectorStoreRetriever:
 
 
 @tool
+@fluxloop.trace(name="lookup_policy")
 def lookup_policy(query: str) -> str:
     """Consult the company policies to check whether certain options are permitted.
     Use this before making any flight changes performing other 'write' events."""

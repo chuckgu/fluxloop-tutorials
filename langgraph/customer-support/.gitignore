@@ -1,0 +1,27 @@
+# Bytecode / cache
+__pycache__/
+*.py[cod]
+
+# Virtual envs
+.venv/
+.env
+
+# Tooling artefacts
+.DS_Store
+*.log
+
+# Local data files
+.cache/
+travel2.sqlite
+travel2.backup.sqlite
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# UV / build artefacts
+.python-version
+.ruff_cache/
+.pytest_cache/
+dist/
+build/
+

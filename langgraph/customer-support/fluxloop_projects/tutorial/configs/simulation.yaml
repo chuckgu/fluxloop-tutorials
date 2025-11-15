@@ -1,0 +1,53 @@
+# FluxLoop Simulation Configuration
+# ------------------------------------------------------------
+# Controls how experiments execute (iterations, runner target, output paths).
+# Adjust runner module/function to point at your agent entry point.
+name: tutorial_experiment
+description: AI agent simulation experiment
+
+iterations: 1           # Number of times to cycle through inputs/personas
+parallel_runs: 1          # Increase for concurrent execution (ensure thread safety)
+run_delay_seconds: 0      # Optional delay between runs to avoid rate limits
+seed: 42                  # Set for reproducibility; remove for randomness
+
+runner:
+  target: "customer_support.main:run_customer_support_session"
+  working_directory: .
+  python_path:["src"]
+  timeout_seconds: 120
+  max_retries: 3
+  args:
+    part: part4
+    provider: anthropic         # 필요하면 openai 등으로 변경
+    auto_approve: true          # 사용자 승인 반복을 자동으로 통과시킬 경우
+    max_turns: 12               # 내부 시뮬레이터가 있다면 턴 제한
+    overwrite_db: false
+    prompt_for_env: false
+
+replay_args:
+  enabled: false
+  recording_file: recordings/args_recording.jsonl
+  override_param_path: data.content
+
+multi_turn:
+  enabled: false              # Enable to drive conversations via supervisor
+  max_turns: 8                # Safety cap on total turns per conversation
+  auto_approve_tools: true    # Automatically approve tool calls when supported
+  persona_override: null      # Force a specific persona id (optional)
+  supervisor:
+    provider: openai          # openai (LLM generated) | mock (scripted playback)
+    model: gpt-5-mini
+    system_prompt: |
+      You supervise an AI assistant supporting customers.
+      Review the entire transcript and decide whether to continue.
+      When continuing, craft the next user message consistent with the persona.
+      When terminating, explain the reason and provide any closing notes.
+    metadata:
+      scripted_questions: []  # Array of user utterances for sequential playback (e.g., ["First question", "Second question", ...])
+      mock_decision: terminate        # Fallback when no scripted questions remain
+      mock_reason: script_complete    # Termination reason for scripted runs
+      mock_closing: "Thanks for the help. I have no further questions."
+
+output_directory: experiments
+save_traces: true
+save_aggregated_metrics: true

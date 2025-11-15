@@ -1,0 +1,350 @@
+# FluxLoop Evaluation Configuration
+# ------------------------------------------------------------
+# Controls how experiment results are evaluated.
+# - evaluators: rule-based or LLM judges that score each trace
+# - aggregate: how scores combine into a final pass/fail decision
+# - limits: cost-control knobs for LLM-based evaluators
+# - success_criteria / additional_analysis / report / advanced: Phase 2 features
+# Fill in or adjust the notes below to match your project.
+
+# ------------------------------------------------------------
+# Evaluation Goal (Phase 2)
+# Appears in reports / dashboards; describe desired outcome.
+evaluation_goal:
+  text: |
+    Verify that the agent provides clear, persona-aware responses
+    while meeting latency and accuracy targets.
+
+# ------------------------------------------------------------
+# Evaluators (Phase 1 compatible)
+# Add/remove evaluators as needed. Rule-based examples below.
+evaluators:
+  - name: not_empty
+    type: rule_based
+    enabled: true
+    weight: 0.2
+    rules:
+      - check: output_not_empty
+
+  - name: latency_budget
+    type: rule_based
+    enabled: true
+    weight: 0.2
+    rules:
+      - check: latency_under
+        budget_ms: 1500
+
+  - name: keyword_quality
+    type: rule_based
+    enabled: true
+    weight: 0.1
+    rules:
+      - check: contains
+        target: output
+        keywords: ["help", "assist"]
+      - check: not_contains
+        target: output
+        keywords: ["error", "sorry"]
+
+  - name: similarity_to_expected
+    type: rule_based
+    enabled: true
+    weight: 0.1
+    rules:
+      - check: similarity
+        target: output
+        expected_path: metadata.expected
+        method: difflib
+
+  - name: intent_recognition
+    type: llm_judge
+    enabled: true
+    weight: 0.25
+    model: gpt-5-mini
+    model_parameters:
+      reasoning:
+        effort: medium
+      text:
+        verbosity: medium
+    prompt_template: |
+      # Intent Recognition Quality Review
+      # Provide a JSON-friendly rating from 1-10 inclusive.
+      # Respond using the format: 'Score: <number>/10\nReason: <short explanation>'
+      System role:
+      You are an expert QA analyst reviewing customer-support conversations with a focus on intent alignment.
+
+      Context:
+      - Persona: {persona}
+      - User input: {input}
+      - Agent output: {output}
+      - Additional metadata: {metadata}
+      - Conversation history (if any): {history}
+      - Project guidelines or playbooks: {guidelines}
+
+      Task:
+      Evaluate how accurately the agent identified the user's intent and aligned the response with that intent.
+      Consider:
+      1. Does the response address the true intent behind the request, including implied goals?
+      2. Are any key goals, constraints, policies, or required escalations ignored?
+      3. Does the tone and stance match persona expectations and scenario urgency?
+      4. Does the agent avoid repetition while providing concrete, sequenced next steps where appropriate?
+
+      Reasoning notes should point to specific sentences or omissions when deducting points.
+
+      Score each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on intent recognition when judging.
+      Output format:
+      Score: <number>/10
+      Reason: <one sentence summary>
+      Only produce the score and reason lines.
+    max_score: 10
+    parser: first_number_1_10
+    metadata:
+      sample_response: |
+        Score: 8/10
+        Reason: Intent is identified and tone matches, but the response skips the required escalation checklist.
+
+  - name: response_consistency
+    type: llm_judge
+    enabled: true
+    weight: 0.25
+    model: gpt-5-mini
+    model_parameters:
+      reasoning:
+        effort: medium
+      text:
+        verbosity: medium
+    prompt_template: |
+      # Response Consistency Review
+      # Provide a JSON-friendly rating from 1-10 inclusive.
+      # Respond using the format: 'Score: <number>/10\nReason: <short explanation>'
+      System role:
+      You ensure agents keep answers aligned with established guidance and previous explanations.
+
+      Context:
+      - Persona: {persona}
+      - Current user input: {input}
+      - Agent output: {output}
+      - Conversation history (if any): {history}
+      - Project notes: {guidelines}
+      - Known policies or product constraints: {policy_context}
+
+      Task:
+      Judge the response for consistency and coherence.
+      Consider:
+      1. Are statements compatible with prior agent replies and logged commitments?
+      2. Does messaging stay aligned with supplied project guidelines and policy context?
+      3. Are there contradictions, loops, or repeated phrases that add noise or confusion?
+      4. Does the response stay concise while covering required policy reminders, caveats, or disclaimers?
+
+      When deducting points, cite the conflicting sentence or missing alignment in the reason string.
+
+      Score each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on response consistency when judging.
+      Output format:
+      Score: <number>/10
+      Reason: <one sentence summary>
+      Only produce the score and reason lines.
+    max_score: 10
+    parser: first_number_1_10
+    metadata:
+      sample_response: |
+        Score: 6/10
+        Reason: Tone stays on-brand, but it repeats the refund policy twice and contradicts an earlier eligibility statement.
+
+  - name: response_clarity
+    type: llm_judge
+    enabled: true
+    weight: 0.2
+    model: gpt-5-mini
+    model_parameters:
+      reasoning:
+        effort: medium
+      text:
+        verbosity: medium
+    prompt_template: |
+      # Response Clarity Review
+      # Provide a JSON-friendly rating from 1-10 inclusive.
+      # Respond using the format: 'Score: <number>/10\nReason: <short explanation>'
+      System role:
+      You review answers for clarity, actionable direction, and persona-fit presentation.
+
+      Context:
+      - Persona: {persona}
+      - User input: {input}
+      - Agent output: {output}
+      - Supporting data or attachments: {supporting_data}
+
+      Task:
+      Judge whether the response is easy to understand and provides actionable next steps.
+      Consider:
+      1. Clarity of language (avoids jargon, uses organized structure, highlights key decisions).
+      2. Completeness of steps or explanations, including concrete instructions or escalation paths.
+      3. Tone appropriateness for the persona, addressing confidence level and empathy needs.
+      4. Does the answer avoid redundant repetition while remaining specific and helpful?
+
+      Mention the sentence, bullet, or missing detail that most drives your score.
+
+      Score each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on response clarity when judging.
+      Output format:
+      Score: <number>/10
+      Reason: <one sentence summary>
+      Only produce the score and reason lines.
+    max_score: 10
+    parser: first_number_1_10
+    metadata:
+      sample_response: |
+        Score: 5/10
+        Reason: Structure is readable, but it repeats the same reassurance twice and omits next-step instructions.
+
+  - name: information_completeness
+    type: llm_judge
+    enabled: false
+    weight: 0.1
+    model: gpt-5-mini
+    model_parameters:
+      reasoning:
+        effort: medium
+      text:
+        verbosity: medium
+    prompt_template: |
+      # Information Completeness Review
+      # Provide a JSON-friendly rating from 1-10 inclusive.
+      # Respond using the format: 'Score: <number>/10\nReason: <short explanation>'
+      System role:
+      You verify that responses include all critical information the user needs to succeed.
+
+      Context:
+      - Persona: {persona}
+      - User request: {input}
+      - Agent output: {output}
+      - Required artifacts or data: {requirements}
+      - Knowledge-base guidance or SOPs: {knowledge_base}
+
+      Task:
+      Assess whether the response covers all required facts, steps, and caveats.
+      Consider:
+      1. Does the agent supply each required data point or link listed in the requirements?
+      2. Are disclaimers, prerequisites, risks, or service limits clearly stated?
+      3. Would the user need additional clarification, or is follow-up content missing?
+      4. Does the answer stay focused and avoid filler repetition while delivering specifics?
+
+      Highlight the missing artifact or redundant section when lowering the score.
+
+      Score each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on information completeness when judging.
+      Output format:
+      Score: <number>/10
+      Reason: <one sentence summary>
+      Only produce the score and reason lines.
+    max_score: 10
+    parser: first_number_1_10
+    metadata:
+      sample_response: |
+        Score: 4/10
+        Reason: Mentions the entitlement check but skips the billing URL and repeats the SLA paragraph verbatim.
+
+# ------------------------------------------------------------
+# Aggregation Settings
+aggregate:
+  method: weighted_sum      # or "average"
+  threshold: 0.7            # pass/fail threshold
+  by_persona: true          # group stats per persona
+
+# ------------------------------------------------------------
+# Limits (LLM cost controls)
+limits:
+  sample_rate: 1.0          # evaluate 100% of traces with LLM
+  max_llm_calls: 50         # cap total LLM API calls
+  timeout_seconds: 60
+  cache: evaluation_cache.jsonl
+
+# ------------------------------------------------------------
+# Success Criteria (Phase 2)
+# Leave disabled fields as false/None if you do not need them.
+success_criteria:
+  performance:
+    all_traces_successful: true
+    avg_response_time:
+      enabled: true
+      threshold_ms: 2000
+    max_response_time:
+      enabled: false
+      threshold_ms: 5000
+    error_rate:
+      enabled: false
+      threshold_percent: 5
+
+  quality:
+    intent_recognition: true
+    response_consistency: true
+    response_clarity: true
+    information_completeness: false
+
+  functionality:
+    tool_calling:
+      enabled: false
+      all_calls_successful: false
+      appropriate_selection: false
+      correct_parameters: false
+      proper_timing: false
+      handles_failures: false
+
+# ------------------------------------------------------------
+# Additional Analysis (Phase 2)
+additional_analysis:
+  persona:
+    enabled: false
+    focus_personas: []      # e.g., ["expert_user", "novice_user"]
+
+  performance:
+    detect_outliers: false
+    trend_analysis: false
+
+  failures:
+    enabled: false
+    categorize_causes: false
+
+  comparison:
+    enabled: false
+    baseline_path: ""      # path to baseline summary.json
+
+# ------------------------------------------------------------
+# Report Configuration (Phase 2)
+report:
+  style: standard           # quick | standard | detailed
+
+  sections:
+    executive_summary: true
+    key_metrics: true
+    detailed_results: true
+    statistical_analysis: false
+    failure_cases: true
+    success_examples: false
+    recommendations: true
+    action_items: true
+
+  visualizations:
+    charts_and_graphs: true
+    tables: true
+    interactive: true       # generate HTML with charts
+
+  tone: balanced            # technical | executive | balanced
+  output: both              # md | html | both
+  template_path: null       # override with custom HTML template
+
+# ------------------------------------------------------------
+# Advanced Settings (Phase 2+)
+advanced:
+  statistical_tests:
+    enabled: false
+    significance_level: 0.05
+    confidence_interval: 0.95
+
+  outliers:
+    detection: true
+    handling: analyze_separately   # remove | analyze_separately | include
+
+  alerts:
+    enabled: false
+    conditions:
+      - metric: "error_rate"
+        threshold: 10
+        operator: ">"

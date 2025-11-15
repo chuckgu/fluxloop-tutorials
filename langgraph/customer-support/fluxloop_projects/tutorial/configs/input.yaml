@@ -1,0 +1,59 @@
+# FluxLoop Input Configuration
+# ------------------------------------------------------------
+# Defines personas, base inputs, and generation modes.
+# Adjust personas/goals/strategies based on your target scenarios.
+personas:
+  - name: novice_user
+    description: A user new to the system
+    characteristics:
+      - Asks basic questions
+      - May use incorrect terminology
+      - Needs detailed explanations
+    language: en
+    expertise_level: novice
+    goals:
+      - Understand system capabilities
+      - Complete basic tasks
+    # Tip: Add persona-specific context that can be injected into prompts.
+
+  - name: expert_user
+    description: An experienced power user
+    characteristics:
+      - Uses technical terminology
+      - Asks complex questions
+      - Expects efficient responses
+    language: en
+    expertise_level: expert
+    goals:
+      - Optimize workflows
+      - Access advanced features
+    # Tip: Include any tone/style expectations in characteristics.
+
+base_inputs:
+  - input: "Hi there, what time is my flight?"
+    expected_intent: flight_time
+    # Provide optional 'metadata' or 'expected' fields to guide evaluation.
+
+# ------------------------------------------------------------
+# Input generation settings
+# - variation_strategies: transformations applied when synthesizing inputs.
+# - variation_count / temperature: tune diversity of generated samples.
+# - inputs_file: location where generated inputs will be saved/loaded.
+variation_strategies:
+  - rephrase
+  - verbose
+  - error_prone
+
+variation_count: 2
+variation_temperature: 0.7
+
+inputs_file: inputs/generated.yaml
+
+input_generation:
+  mode: llm
+  llm:
+    enabled: true
+    provider: openai
+    model: gpt-5-mini
+    api_key: null
+    # Replace provider/model/api_key according to your LLM setup.

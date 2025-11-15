@@ -1,0 +1,8 @@
+[
+  {
+    "iteration": 0,
+    "persona": "expert_user",
+    "input": "Flight AA123 (PNR X1YZ9) on 2025-11-20 JFK\u2192LAX: give scheduled departure in local time and UTC (ISO 8601), current status, ETD/ETA, terminal and gate if available.",
+    "error": "Recursion limit of 25 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
+  }
+]

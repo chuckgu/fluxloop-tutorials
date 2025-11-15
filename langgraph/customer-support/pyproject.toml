@@ -19,8 +19,8 @@ dependencies = [
     "pydantic>=2.7.0",
     "pytz>=2023.3",
     "typing-extensions>=4.8.0",
-    "fluxloop==0.1.5",
-    "fluxloop-cli>=0.1.0",
+    "fluxloop==0.1.6",
+    "fluxloop-cli==0.2.24",
     "fluxloop-mcp>=0.1.0",
 ]
 

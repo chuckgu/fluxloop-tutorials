@@ -1,0 +1,26 @@
+# FluxLoop Project Configuration
+# ------------------------------------------------------------
+# Describes global metadata and defaults shared across the project.
+# Update name/description/tags to suit your workspace.
+name: tutorial
+description: AI agent simulation project
+version: 1.0.0
+
+# FluxLoop VSCode extension will prompt to set this path
+source_root: "/Users/user/Documents/fluxloop-tutorials/langgraph/customer-support"
+
+# Optional collector settings (leave null if using offline mode only)
+collector_url: null
+collector_api_key: null
+
+# Tags and metadata help downstream tooling categorize experiments
+tags:
+  - simulation
+  - testing
+
+metadata:
+  team: development
+  environment: local
+  service_context: ""
+  # Describe the overall service scenario (used by multi-turn supervisor)
+  # Add any custom fields used by dashboards or automation tools.

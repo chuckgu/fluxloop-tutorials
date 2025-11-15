@@ -1,0 +1,404 @@
+generated_at: '2025-11-15T14:30:21.621061Z'
+metadata:
+  config_name: tutorial_experiment
+  total_base_inputs: 1
+  total_personas: 2
+  strategies:
+  - rephrase
+  - typo
+  - concise
+  limit: null
+  generation_mode: llm
+  llm_provider: openai
+  llm_model: gpt-5-mini
+inputs:
+- input: Hi ther, whats my flite time? I'm new — how do I check it?
+  metadata:
+    strategy: typo
+    base_index: 0
+    persona: novice_user
+    persona_description: A user new to the system
+    model: gpt-5-mini
+    provider: openai
+    prompt_hash: 5be27e7fb0339726
+    prompt: 'You are an expert in creating high-quality datasets for testing AI agents.
+
+      Your task is to generate a single, realistic user message that a person would
+      type into a support chat or search box. This message will be used as an input
+      in an automated simulation to test an AI agent''s performance.
+
+
+      **Instructions:**
+
+      1.  Read the Base Input, Strategy, and Persona details carefully.
+
+      2.  Generate a new user message that modifies the Base Input according to the
+      given Strategy and reflects the Persona.
+
+      3.  **Keep the message concise and natural.** Even when the strategy is "verbose,"
+      it should still be a realistic user query, not a lengthy technical specification.
+      A verbose user might ask multiple related questions in one message, but they
+      would not write an essay.
+
+      4.  **Your output must ONLY be the generated user message text.** Do not include
+      any prefixes, quotation marks, explanations, or formatting like bullet points.
+      It should be a single block of text.
+
+
+      ---
+
+      **Base Input:**
+
+      Hi there, what time is my flight?
+
+
+      **Strategy to Apply (how the user words their request):**
+
+      typo
+
+
+      **User Persona Profile:**
+
+      User Persona: novice_user
+
+      Description: A user new to the system
+
+      Characteristics: Asks basic questions, May use incorrect terminology, Needs
+      detailed explanations
+
+      Goals: Understand system capabilities, Complete basic tasks
+
+      Language: en
+
+      Expertise Level: novice
+
+      ---
+
+
+      Generated User Message:'
+- input: Hi, can you tell me what time my flight departs and how I can check it if
+    I don't have my booking/reference number?
+  metadata:
+    strategy: rephrase
+    base_index: 0
+    persona: novice_user
+    persona_description: A user new to the system
+    model: gpt-5-mini
+    provider: openai
+    prompt_hash: da6c5b521e825d20
+    prompt: 'You are an expert in creating high-quality datasets for testing AI agents.
+
+      Your task is to generate a single, realistic user message that a person would
+      type into a support chat or search box. This message will be used as an input
+      in an automated simulation to test an AI agent''s performance.
+
+
+      **Instructions:**
+
+      1.  Read the Base Input, Strategy, and Persona details carefully.
+
+      2.  Generate a new user message that modifies the Base Input according to the
+      given Strategy and reflects the Persona.
+
+      3.  **Keep the message concise and natural.** Even when the strategy is "verbose,"
+      it should still be a realistic user query, not a lengthy technical specification.
+      A verbose user might ask multiple related questions in one message, but they
+      would not write an essay.
+
+      4.  **Your output must ONLY be the generated user message text.** Do not include
+      any prefixes, quotation marks, explanations, or formatting like bullet points.
+      It should be a single block of text.
+
+
+      ---
+
+      **Base Input:**
+
+      Hi there, what time is my flight?
+
+
+      **Strategy to Apply (how the user words their request):**
+
+      rephrase
+
+
+      **User Persona Profile:**
+
+      User Persona: novice_user
+
+      Description: A user new to the system
+
+      Characteristics: Asks basic questions, May use incorrect terminology, Needs
+      detailed explanations
+
+      Goals: Understand system capabilities, Complete basic tasks
+
+      Language: en
+
+      Expertise Level: novice
+
+      ---
+
+
+      Generated User Message:'
+- input: Hi, how can I find out what time my flight leaves? I'm new to this.
+  metadata:
+    strategy: concise
+    base_index: 0
+    persona: novice_user
+    persona_description: A user new to the system
+    model: gpt-5-mini
+    provider: openai
+    prompt_hash: 1e56aa2d4eacf278
+    prompt: 'You are an expert in creating high-quality datasets for testing AI agents.
+
+      Your task is to generate a single, realistic user message that a person would
+      type into a support chat or search box. This message will be used as an input
+      in an automated simulation to test an AI agent''s performance.
+
+
+      **Instructions:**
+
+      1.  Read the Base Input, Strategy, and Persona details carefully.
+
+      2.  Generate a new user message that modifies the Base Input according to the
+      given Strategy and reflects the Persona.
+
+      3.  **Keep the message concise and natural.** Even when the strategy is "verbose,"
+      it should still be a realistic user query, not a lengthy technical specification.
+      A verbose user might ask multiple related questions in one message, but they
+      would not write an essay.
+
+      4.  **Your output must ONLY be the generated user message text.** Do not include
+      any prefixes, quotation marks, explanations, or formatting like bullet points.
+      It should be a single block of text.
+
+
+      ---
+
+      **Base Input:**
+
+      Hi there, what time is my flight?
+
+
+      **Strategy to Apply (how the user words their request):**
+
+      concise
+
+
+      **User Persona Profile:**
+
+      User Persona: novice_user
+
+      Description: A user new to the system
+
+      Characteristics: Asks basic questions, May use incorrect terminology, Needs
+      detailed explanations
+
+      Goals: Understand system capabilities, Complete basic tasks
+
+      Language: en
+
+      Expertise Level: novice
+
+      ---
+
+
+      Generated User Message:'
+- input: 'Flight AA123 (PNR X1YZ9) on 2025-11-20 JFK→LAX: give scheduled departure
+    in local time and UTC (ISO 8601), current status, ETD/ETA, terminal and gate if
+    available.'
+  metadata:
+    strategy: concise
+    base_index: 0
+    persona: expert_user
+    persona_description: An experienced power user
+    model: gpt-5-mini
+    provider: openai
+    prompt_hash: 8e19c5e76a1889cb
+    prompt: 'You are an expert in creating high-quality datasets for testing AI agents.
+
+      Your task is to generate a single, realistic user message that a person would
+      type into a support chat or search box. This message will be used as an input
+      in an automated simulation to test an AI agent''s performance.
+
+
+      **Instructions:**
+
+      1.  Read the Base Input, Strategy, and Persona details carefully.
+
+      2.  Generate a new user message that modifies the Base Input according to the
+      given Strategy and reflects the Persona.
+
+      3.  **Keep the message concise and natural.** Even when the strategy is "verbose,"
+      it should still be a realistic user query, not a lengthy technical specification.
+      A verbose user might ask multiple related questions in one message, but they
+      would not write an essay.
+
+      4.  **Your output must ONLY be the generated user message text.** Do not include
+      any prefixes, quotation marks, explanations, or formatting like bullet points.
+      It should be a single block of text.
+
+
+      ---
+
+      **Base Input:**
+
+      Hi there, what time is my flight?
+
+
+      **Strategy to Apply (how the user words their request):**
+
+      concise
+
+
+      **User Persona Profile:**
+
+      User Persona: expert_user
+
+      Description: An experienced power user
+
+      Characteristics: Uses technical terminology, Asks complex questions, Expects
+      efficient responses
+
+      Goals: Optimize workflows, Access advanced features
+
+      Language: en
+
+      Expertise Level: expert
+
+      ---
+
+
+      Generated User Message:'
+- input: Pull the scheduled departure time for my upcoming flight from my itinerary
+    and show it in both local time and UTC.
+  metadata:
+    strategy: rephrase
+    base_index: 0
+    persona: expert_user
+    persona_description: An experienced power user
+    model: gpt-5-mini
+    provider: openai
+    prompt_hash: f07698fae09e37a1
+    prompt: 'You are an expert in creating high-quality datasets for testing AI agents.
+
+      Your task is to generate a single, realistic user message that a person would
+      type into a support chat or search box. This message will be used as an input
+      in an automated simulation to test an AI agent''s performance.
+
+
+      **Instructions:**
+
+      1.  Read the Base Input, Strategy, and Persona details carefully.
+
+      2.  Generate a new user message that modifies the Base Input according to the
+      given Strategy and reflects the Persona.
+
+      3.  **Keep the message concise and natural.** Even when the strategy is "verbose,"
+      it should still be a realistic user query, not a lengthy technical specification.
+      A verbose user might ask multiple related questions in one message, but they
+      would not write an essay.
+
+      4.  **Your output must ONLY be the generated user message text.** Do not include
+      any prefixes, quotation marks, explanations, or formatting like bullet points.
+      It should be a single block of text.
+
+
+      ---
+
+      **Base Input:**
+
+      Hi there, what time is my flight?
+
+
+      **Strategy to Apply (how the user words their request):**
+
+      rephrase
+
+
+      **User Persona Profile:**
+
+      User Persona: expert_user
+
+      Description: An experienced power user
+
+      Characteristics: Uses technical terminology, Asks complex questions, Expects
+      efficient responses
+
+      Goals: Optimize workflows, Access advanced features
+
+      Language: en
+
+      Expertise Level: expert
+
+      ---
+
+
+      Generated User Message:'
+- input: What's the scheduled departure time for my fligth (PNR X1Z2Y3)? Return local
+    time and UTC in ISO 8601 and show the fastest API call (endpoint + required headers)
+    to retrieve it.
+  metadata:
+    strategy: typo
+    base_index: 0
+    persona: expert_user
+    persona_description: An experienced power user
+    model: gpt-5-mini
+    provider: openai
+    prompt_hash: d21034ace75978fb
+    prompt: 'You are an expert in creating high-quality datasets for testing AI agents.
+
+      Your task is to generate a single, realistic user message that a person would
+      type into a support chat or search box. This message will be used as an input
+      in an automated simulation to test an AI agent''s performance.
+
+
+      **Instructions:**
+
+      1.  Read the Base Input, Strategy, and Persona details carefully.
+
+      2.  Generate a new user message that modifies the Base Input according to the
+      given Strategy and reflects the Persona.
+
+      3.  **Keep the message concise and natural.** Even when the strategy is "verbose,"
+      it should still be a realistic user query, not a lengthy technical specification.
+      A verbose user might ask multiple related questions in one message, but they
+      would not write an essay.
+
+      4.  **Your output must ONLY be the generated user message text.** Do not include
+      any prefixes, quotation marks, explanations, or formatting like bullet points.
+      It should be a single block of text.
+
+
+      ---
+
+      **Base Input:**
+
+      Hi there, what time is my flight?
+
+
+      **Strategy to Apply (how the user words their request):**
+
+      typo
+
+
+      **User Persona Profile:**
+
+      User Persona: expert_user
+
+      Description: An experienced power user
+
+      Characteristics: Uses technical terminology, Asks complex questions, Expects
+      efficient responses
+
+      Goals: Optimize workflows, Access advanced features
+
+      Language: en
+
+      Expertise Level: expert
+
+      ---
+
+
+      Generated User Message:'

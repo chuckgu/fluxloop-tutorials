@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import sys
 import uuid
@@ -40,6 +41,16 @@ DEFAULT_PROVIDER = "anthropic"
 PROVIDER_ENV_KEY = "CUSTOMER_SUPPORT_PROVIDER"
 OPENAI_MODEL = "gpt-5-mini"
 ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
+
+logger = logging.getLogger(__name__)
+
+_LOGLEVEL = os.environ.get("LOGLEVEL")
+if _LOGLEVEL:
+    level = getattr(logging, _LOGLEVEL.upper(), logging.INFO)
+    if not logging.getLogger().handlers:
+        logging.basicConfig(level=level)
+    else:
+        logging.getLogger().setLevel(level)
 
 def resolve_provider(provider: str | None) -> str:
     candidate = (provider or os.environ.get(PROVIDER_ENV_KEY) or DEFAULT_PROVIDER).lower()
@@ -163,22 +174,63 @@ def load_questions(questions_file: Path | None) -> List[str]:
     return list(PART1_TUTORIAL_QUESTIONS)
 
 
-def _normalize_prompts(prompts: Iterable[str] | None) -> List[str]:
+def _normalize_prompts(prompts: Iterable[Any] | None) -> List[str]:
     if prompts is None:
         return list(PART1_TUTORIAL_QUESTIONS)
     if isinstance(prompts, str):
         text = prompts.strip()
         return [text] if text else list(PART1_TUTORIAL_QUESTIONS)
+
     normalized: List[str] = []
-    for item in prompts:
+    for idx, item in enumerate(prompts):
         if item is None:
             continue
+
+        if isinstance(item, dict):
+            logger.debug("normalize_prompts[%s] dict keys: %s", idx, list(item.keys()))
+            messages = item.get("messages")
+            if isinstance(messages, Iterable):
+                for message in messages:
+                    if not isinstance(message, dict):
+                        continue
+                    if message.get("role") != "user":
+                        continue
+                    text = _render_message_content(message).strip()
+                    if text:
+                        normalized.append(text)
+                if normalized:
+                    continue
+            text = str(
+                item.get("input")
+                or item.get("text")
+                or item.get("prompt")
+                or ""
+            ).strip()
+            if text:
+                normalized.append(text)
+            else:
+                logger.debug("normalize_prompts[%s] dict fallback produced empty text", idx)
+            continue
+
+        if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
+            logger.debug(
+                "normalize_prompts[%s] nested iterable of type %s", idx, type(item).__name__
+            )
+            nested = _normalize_prompts(item)
+            normalized.extend(nested)
+            continue
+
         text = str(item).strip()
         if text:
             normalized.append(text)
-    if not normalized:
-        return list(PART1_TUTORIAL_QUESTIONS)
-    return normalized
+        else:
+            logger.debug(
+                "normalize_prompts[%s] ignored value of type %s (empty after strip)",
+                idx,
+                type(item).__name__,
+            )
+
+    return normalized if normalized else list(PART1_TUTORIAL_QUESTIONS)
 
 
 def _render_message_content(message: Any) -> str:
@@ -223,27 +275,33 @@ def run_customer_support_session(
     overwrite_db: bool = False,
     prompt_for_env: bool = False,
 ) -> dict[str, Any]:
-    graph, config, resolved_provider = prepare_runtime(
-        part=part,
-        provider=provider,
-        passenger_id=passenger_id,
-        data_dir=data_dir,
-        thread_id=thread_id,
-        overwrite_db=overwrite_db,
-        prompt_for_env=prompt_for_env,
-    )
-    questions = _normalize_prompts(prompts)
-    transcript = []
-    for text in questions:
-        turn = {"user": text}
-        result = graph.invoke({"messages": ("user", text)}, config)
-        turn["assistant"] = _extract_assistant_text(result)
-        transcript.append(turn)
-    return {
-        "transcript": transcript,
-        "thread_id": config["configurable"]["thread_id"],
-        "provider": resolved_provider,
-    }
+    logger.debug("run_session prompts type=%s value=%r", type(prompts), prompts)
+    try:
+        graph, config, resolved_provider = prepare_runtime(
+            part=part,
+            provider=provider,
+            passenger_id=passenger_id,
+            data_dir=data_dir,
+            thread_id=thread_id,
+            overwrite_db=overwrite_db,
+            prompt_for_env=prompt_for_env,
+        )
+        questions = _normalize_prompts(prompts)
+        logger.debug("normalized questions (%d): %s", len(questions), questions)
+        transcript = []
+        for text in questions:
+            turn = {"user": text}
+            result = graph.invoke({"messages": ("user", text)}, config)
+            turn["assistant"] = _extract_assistant_text(result)
+            transcript.append(turn)
+        return {
+            "transcript": transcript,
+            "thread_id": config["configurable"]["thread_id"],
+            "provider": resolved_provider,
+        }
+    except Exception:
+        logger.exception("run_customer_support_session failure")
+        raise
 
 
 def main(argv: Sequence[str] | None = None) -> int:

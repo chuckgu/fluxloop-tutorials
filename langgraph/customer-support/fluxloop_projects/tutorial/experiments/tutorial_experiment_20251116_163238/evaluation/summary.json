@@ -1,0 +1,199 @@
+{
+  "total_traces": 6,
+  "passed_traces": 0,
+  "pass_rate": 0.0,
+  "average_score": 0.3462282281498797,
+  "threshold": 0.7,
+  "aggregate_method": "weighted_sum",
+  "evaluators": [
+    "not_empty",
+    "latency_budget",
+    "keyword_quality",
+    "similarity_to_expected",
+    "intent_recognition",
+    "response_consistency",
+    "response_clarity"
+  ],
+  "evaluator_stats": {
+    "not_empty": {
+      "average": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "count": 6
+    },
+    "latency_budget": {
+      "average": 0.004650149640884764,
+      "min": 0.0038092610719900524,
+      "max": 0.005514475007807268,
+      "count": 6
+    },
+    "keyword_quality": {
+      "average": 0.75,
+      "min": 0.75,
+      "max": 0.75,
+      "count": 6
+    },
+    "similarity_to_expected": {
+      "average": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "count": 6
+    },
+    "intent_recognition": {
+      "average": 0.13333333333333333,
+      "min": 0.1,
+      "max": 0.2,
+      "count": 6
+    },
+    "response_consistency": {
+      "average": 0.2833333333333333,
+      "min": 0.2,
+      "max": 0.5,
+      "count": 6
+    },
+    "response_clarity": {
+      "average": 0.35,
+      "min": 0.3,
+      "max": 0.5,
+      "count": 6
+    }
+  },
+  "persona_breakdown": {
+    "novice_user": {
+      "count": 3,
+      "average_score": 0.3481039940544965,
+      "pass_rate": 0.0
+    },
+    "expert_user": {
+      "count": 3,
+      "average_score": 0.3443524622452629,
+      "pass_rate": 0.0
+    }
+  },
+  "top_reasons": [
+    [
+      "missing keywords: help",
+      6
+    ],
+    [
+      "expected value not provided",
+      6
+    ],
+    [
+      "duration 393777.2ms exceeds budget 1500.0ms",
+      1
+    ],
+    [
+      "The agent completely missed the user's intent about checking a flight time—providing unrelated booking questions instead of answering how to find/verify a flight time or asking clarifying flight details.",
+      1
+    ],
+    [
+      "The assistant's reply continues a booking flow from the transcript rather than answering the user's current question about flight time, and it makes an unsupported assumption by stating \"I’ll use your arrival info to set the 'second day' as 2025-11-17\" without any provided arrival details.",
+      1
+    ],
+    [
+      "Response is off‑target—the assistant jumps to booking (e.g., \"I can do that — I just need a couple quick details before I book.\") instead of answering how to check flight time and omits actionable steps like checking your confirmation email, airline app/website, or providing a booking/reference number.",
+      1
+    ],
+    [
+      "duration 313644.5ms exceeds budget 1500.0ms",
+      1
+    ],
+    [
+      "The agent completely missed the user's intent—rather than telling the flight departure time or explaining how to check it without a booking/reference number, it proceeded to offer and confirm booking a tour (\"I can do that — I’ll pick a popular option and book it...\"), failing to ask for any flight details or provide relevant methods (airline/airport lookup by name/email, mobile app, check-in counter, etc.).",
+      1
+    ],
+    [
+      "The assistant's reply is largely irrelevant to the user's question and makes an ungrounded claim (\"that would be 2025-11-17, since your flight arrives 2025-11-16\") without prior info, failing to answer how to check a flight without a booking/reference number.",
+      1
+    ],
+    [
+      "The assistant's bulleted confirmation questions (1–4) are clear and organized for booking a tour, but it entirely fails to answer the user's flight-time question or provide any steps for checking a flight without a booking/reference number, the key missing detail.",
+      1
+    ]
+  ],
+  "evaluation_goal": "Verify that the agent provides clear, persona-aware responses\nwhile meeting latency and accuracy targets.\n",
+  "success_criteria_results": {
+    "performance": {
+      "all_traces_successful": {
+        "met": true,
+        "expected": true,
+        "total_traces": 6,
+        "successful_traces": 6
+      },
+      "avg_response_time": {
+        "met": false,
+        "average_ms": 329487.1485233307,
+        "threshold_ms": 2000,
+        "trace_count": 6
+      }
+    },
+    "quality": {
+      "intent_recognition": {
+        "met": false,
+        "average_score": 0.13333333333333333,
+        "threshold": 0.7,
+        "pass_rate": 0.0,
+        "trace_count": 6
+      },
+      "response_consistency": {
+        "met": false,
+        "average_score": 0.2833333333333333,
+        "threshold": 0.7,
+        "pass_rate": 0.0,
+        "trace_count": 6
+      },
+      "response_clarity": {
+        "met": false,
+        "average_score": 0.35,
+        "threshold": 0.7,
+        "pass_rate": 0.0,
+        "trace_count": 6
+      }
+    },
+    "functionality": {},
+    "overall_success": false
+  },
+  "overall_success": false,
+  "analysis": {
+    "recommendations": [
+      {
+        "title": "Boost overall pass rate",
+        "priority": "high",
+        "summary": "Pass rate is 0.0% (goal 70.0%). Most common failure reason: missing keywords: help.",
+        "metrics": {
+          "pass_rate": 0.0,
+          "threshold": 0.7
+        }
+      },
+      {
+        "title": "Target persona 'novice_user'",
+        "priority": "medium",
+        "summary": "novice_user pass rate is 0.0% (goal 70.0%). Prioritize playbooks or prompts for this persona.",
+        "metrics": {
+          "persona": "novice_user",
+          "pass_rate": 0.0,
+          "threshold": 0.7
+        }
+      },
+      {
+        "title": "Target persona 'expert_user'",
+        "priority": "medium",
+        "summary": "expert_user pass rate is 0.0% (goal 70.0%). Prioritize playbooks or prompts for this persona.",
+        "metrics": {
+          "persona": "expert_user",
+          "pass_rate": 0.0,
+          "threshold": 0.7
+        }
+      }
+    ]
+  },
+  "report": {
+    "format": "both",
+    "style": "standard",
+    "tone": "balanced",
+    "template": "default"
+  },
+  "llm_calls": 18,
+  "llm_sample_rate": 1.0
+}

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verify that the agent provides clear, persona-aware responses
+while meeting latency and accuracy targets.
+</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <main class="max-w-6xl mx-auto p-8 space-y-6">
+    <header class="space-y-6">
+      <div>
+      <h1 class="text-3xl font-bold">Verify that the agent provides clear, persona-aware responses
+while meeting latency and accuracy targets.
+</h1>
+      <p class="text-sm text-slate-300">Generated at 2025-11-16T08:09:39Z</p>
+      </div>
+      <nav class="flex flex-wrap gap-2" role="tablist" aria-label="Report sections">
+        <button class="tab-button px-4 py-2 rounded-full bg-sky-500/20 border border-sky-400 text-sky-200 font-semibold" data-tab-button="summary">Executive Summary</button>
+        <button class="tab-button px-4 py-2 rounded-full bg-slate-800 border border-slate-700" data-tab-button="personas">Persona Insights</button>
+        <button class="tab-button px-4 py-2 rounded-full bg-slate-800 border border-slate-700" data-tab-button="analysis">Deep Analysis</button>
+        <button class="tab-button px-4 py-2 rounded-full bg-slate-800 border border-slate-700" data-tab-button="traces">Trace Explorer</button>
+      </nav>
+    </header>
+
+    <section data-tab-panel="summary" class="tab-panel space-y-6">
+      <div id="summaryCards" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"></div>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Success Criteria</h2>
+        <div id="criteriaList" class="space-y-3"></div>
+      </section>
+
+      <section class="space-y-3">
+        <div class="flex items-center gap-2">
+          <h2 class="text-xl font-semibold">Recommendations</h2>
+          <span class="text-xs uppercase tracking-wide text-slate-400">Auto-generated</span>
+        </div>
+        <div id="recommendations" class="grid gap-4 md:grid-cols-2"></div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-semibold">Score Trend</h2>
+        <canvas id="scoreChart" height="200"></canvas>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-semibold">Top Failure Reasons</h2>
+        <div id="topReasons" class="grid gap-3 md:grid-cols-2"></div>
+      </section>
+    </section>
+
+    <section data-tab-panel="personas" class="tab-panel hidden space-y-4">
+      <p class="text-sm text-slate-300">Compare persona-level performance to target thresholds.</p>
+      <div id="personaSummary" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+    </section>
+
+    <section data-tab-panel="analysis" class="tab-panel hidden space-y-4">
+      <div id="analysisContent" class="space-y-4"></div>
+    </section>
+
+    <section data-tab-panel="traces" class="tab-panel hidden space-y-4">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+          <label for="tracePersonaFilter" class="block text-sm text-slate-300 font-medium mb-1">Persona filter</label>
+          <select id="tracePersonaFilter" class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
+            <option value="all">All personas</option>
+          </select>
+        </div>
+        <p id="traceCountHint" class="text-xs text-slate-400"></p>
+      </div>
+      <div class="overflow-x-auto border border-slate-800 rounded-lg">
+        <table class="min-w-full divide-y divide-slate-800" id="traceTable">
+          <thead class="bg-slate-900/60 text-xs uppercase tracking-wide text-slate-400">
+            <tr>
+              <th class="px-4 py-3 text-left">Trace ID</th>
+              <th class="px-4 py-3 text-left">Persona</th>
+              <th class="px-4 py-3 text-left">Iteration</th>
+              <th class="px-4 py-3 text-left">Final Score</th>
+              <th class="px-4 py-3 text-left">Pass</th>
+              <th class="px-4 py-3 text-left">Reasons</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-sm text-slate-200"></tbody>
+        </table>
+      </div>
+      <details class="bg-slate-900 rounded-lg p-4 border border-slate-800">
+        <summary class="cursor-pointer font-semibold">Raw per-trace payload</summary>
+        <pre class="mt-4 text-xs whitespace-pre-wrap break-words bg-slate-950 rounded p-3 overflow-x-auto" id="rawTraceJson"></pre>
+      </details>
+    </section>
+  </main>
+
+  <script>
+    const summary = {"total_traces": 6, "passed_traces": 0, "pass_rate": 0.0, "average_score": 0.3462282281498797, "threshold": 0.7, "aggregate_method": "weighted_sum", "evaluators": ["not_empty", "latency_budget", "keyword_quality", "similarity_to_expected", "intent_recognition", "response_consistency", "response_clarity"], "evaluator_stats": {"not_empty": {"average": 1.0, "min": 1.0, "max": 1.0, "count": 6}, "latency_budget": {"average": 0.004650149640884764, "min": 0.0038092610719900524, "max": 0.005514475007807268, "count": 6}, "keyword_quality": {"average": 0.75, "min": 0.75, "max": 0.75, "count": 6}, "similarity_to_expected": {"average": 0.0, "min": 0.0, "max": 0.0, "count": 6}, "intent_recognition": {"average": 0.13333333333333333, "min": 0.1, "max": 0.2, "count": 6}, "response_consistency": {"average": 0.2833333333333333, "min": 0.2, "max": 0.5, "count": 6}, "response_clarity": {"average": 0.35, "min": 0.3, "max": 0.5, "count": 6}}, "persona_breakdown": {"novice_user": {"count": 3, "average_score": 0.3481039940544965, "pass_rate": 0.0}, "expert_user": {"count": 3, "average_score": 0.3443524622452629, "pass_rate": 0.0}}, "top_reasons": [["missing keywords: help", 6], ["expected value not provided", 6], ["duration 393777.2ms exceeds budget 1500.0ms", 1], ["The agent completely missed the user's intent about checking a flight time—providing unrelated booking questions instead of answering how to find/verify a flight time or asking clarifying flight details.", 1], ["The assistant's reply continues a booking flow from the transcript rather than answering the user's current question about flight time, and it makes an unsupported assumption by stating \"I’ll use your arrival info to set the 'second day' as 2025-11-17\" without any provided arrival details.", 1], ["Response is off‑target—the assistant jumps to booking (e.g., \"I can do that — I just need a couple quick details before I book.\") instead of answering how to check flight time and omits actionable steps like checking your confirmation email, airline app/website, or providing a booking/reference number.", 1], ["duration 313644.5ms exceeds budget 1500.0ms", 1], ["The agent completely missed the user's intent—rather than telling the flight departure time or explaining how to check it without a booking/reference number, it proceeded to offer and confirm booking a tour (\"I can do that — I’ll pick a popular option and book it...\"), failing to ask for any flight details or provide relevant methods (airline/airport lookup by name/email, mobile app, check-in counter, etc.).", 1], ["The assistant's reply is largely irrelevant to the user's question and makes an ungrounded claim (\"that would be 2025-11-17, since your flight arrives 2025-11-16\") without prior info, failing to answer how to check a flight without a booking/reference number.", 1], ["The assistant's bulleted confirmation questions (1–4) are clear and organized for booking a tour, but it entirely fails to answer the user's flight-time question or provide any steps for checking a flight without a booking/reference number, the key missing detail.", 1]], "evaluation_goal": "Verify that the agent provides clear, persona-aware responses\nwhile meeting latency and accuracy targets.\n", "success_criteria_results": {"performance": {"all_traces_successful": {"met": true, "expected": true, "total_traces": 6, "successful_traces": 6}, "avg_response_time": {"met": false, "average_ms": 329487.1485233307, "threshold_ms": 2000, "trace_count": 6}}, "quality": {"intent_recognition": {"met": false, "average_score": 0.13333333333333333, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}, "response_consistency": {"met": false, "average_score": 0.2833333333333333, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}, "response_clarity": {"met": false, "average_score": 0.35, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}}, "functionality": {}, "overall_success": false}, "overall_success": false, "analysis": {"recommendations": [{"title": "Boost overall pass rate", "priority": "high", "summary": "Pass rate is 0.0% (goal 70.0%). Most common failure reason: missing keywords: help.", "metrics": {"pass_rate": 0.0, "threshold": 0.7}}, {"title": "Target persona 'novice_user'", "priority": "medium", "summary": "novice_user pass rate is 0.0% (goal 70.0%). Prioritize playbooks or prompts for this persona.", "metrics": {"persona": "novice_user", "pass_rate": 0.0, "threshold": 0.7}}, {"title": "Target persona 'expert_user'", "priority": "medium", "summary": "expert_user pass rate is 0.0% (goal 70.0%). Prioritize playbooks or prompts for this persona.", "metrics": {"persona": "expert_user", "pass_rate": 0.0, "threshold": 0.7}}]}, "report": {"format": "both", "style": "standard", "tone": "balanced", "template": "default"}, "llm_calls": 18, "llm_sample_rate": 1.0};
+    const perTrace = [{"trace_id": "37cb7580-0f89-40d0-96d4-4338dfc0dc07", "iteration": 0, "persona": "novice_user", "success": true, "duration_ms": 393777.15826034546, "scores": {"not_empty": 1.0, "latency_budget": 0.0038092610719900524, "keyword_quality": 0.75, "similarity_to_expected": 0.0, "intent_recognition": 0.1, "response_consistency": 0.5, "response_clarity": 0.3}, "final_score": 0.3736629632418446, "pass": false, "reasons": {"latency_budget": ["duration 393777.2ms exceeds budget 1500.0ms"], "keyword_quality": ["missing keywords: help"], "similarity_to_expected": ["expected value not provided"], "intent_recognition": ["The agent completely missed the user's intent about checking a flight time—providing unrelated booking questions instead of answering how to find/verify a flight time or asking clarifying flight details."], "response_consistency": ["The assistant's reply continues a booking flow from the transcript rather than answering the user's current question about flight time, and it makes an unsupported assumption by stating \"I’ll use your arrival info to set the 'second day' as 2025-11-17\" without any provided arrival details."], "response_clarity": ["Response is off‑target—the assistant jumps to booking (e.g., \"I can do that — I just need a couple quick details before I book.\") instead of answering how to check flight time and omits actionable steps like checking your confirmation email, airline app/website, or providing a booking/reference number."]}}, {"trace_id": "07f39c11-1eac-423b-96b9-09aa8a8f588a", "iteration": 0, "persona": "novice_user", "success": true, "duration_ms": 313644.50097084045, "scores": {"not_empty": 1.0, "latency_budget": 0.004782484613493846, "keyword_quality": 0.75, "similarity_to_expected": 0.0, "intent_recognition": 0.2, "response_consistency": 0.2, "response_clarity": 0.3}, "final_score": 0.335351151478999, "pass": false, "reasons": {"latency_budget": ["duration 313644.5ms exceeds budget 1500.0ms"], "keyword_quality": ["missing keywords: help"], "similarity_to_expected": ["expected value not provided"], "intent_recognition": ["The agent completely missed the user's intent—rather than telling the flight departure time or explaining how to check it without a booking/reference number, it proceeded to offer and confirm booking a tour (\"I can do that — I’ll pick a popular option and book it...\"), failing to ask for any flight details or provide relevant methods (airline/airport lookup by name/email, mobile app, check-in counter, etc.)."], "response_consistency": ["The assistant's reply is largely irrelevant to the user's question and makes an ungrounded claim (\"that would be 2025-11-17, since your flight arrives 2025-11-16\") without prior info, failing to answer how to check a flight without a booking/reference number."], "response_clarity": ["The assistant's bulleted confirmation questions (1–4) are clear and organized for booking a tour, but it entirely fails to answer the user's flight-time question or provide any steps for checking a flight without a booking/reference number, the key missing detail."]}}, {"trace_id": "8335207f-2417-423d-ae2f-56f8d6015e65", "iteration": 0, "persona": "novice_user", "success": true, "duration_ms": 338131.9229602814, "scores": {"not_empty": 1.0, "latency_budget": 0.004436138377198409, "keyword_quality": 0.75, "similarity_to_expected": 0.0, "intent_recognition": 0.1, "response_consistency": 0.3, "response_clarity": 0.3}, "final_score": 0.3352978674426459, "pass": false, "reasons": {"latency_budget": ["duration 338131.9ms exceeds budget 1500.0ms"], "keyword_quality": ["missing keywords: help"], "similarity_to_expected": ["expected value not provided"], "intent_recognition": ["The agent completely missed the user's core intent of finding their flight departure time and instead launched an unrelated booking workflow, asking irrelevant clarifying questions about dates, passengers, and activities rather than providing steps to locate flight information."], "response_consistency": ["The assistant ignored the user's question about flight time and instead gave unrelated booking clarifications (e.g., \"By “second day there” you mean 2025-11-17...\"), so the response is inconsistent with the user's request."], "response_clarity": ["The reply is organized and polite but irrelevant to the user’s question—focusing on booking clarifications (e.g., “By ‘second day there’ you mean 2025-11-17…?”) instead of giving clear, actionable steps to find the flight departure time."]}}, {"trace_id": "c6fb9607-0122-4a0b-8627-0fc0edd3f078", "iteration": 0, "persona": "expert_user", "success": true, "duration_ms": 384500.35214424133, "scores": {"not_empty": 1.0, "latency_budget": 0.003901166778222587, "keyword_quality": 0.75, "similarity_to_expected": 0.0, "intent_recognition": 0.1, "response_consistency": 0.2, "response_clarity": 0.4}, "final_score": 0.33136941027357275, "pass": false, "reasons": {"latency_budget": ["duration 384500.4ms exceeds budget 1500.0ms"], "keyword_quality": ["missing keywords: help"], "similarity_to_expected": ["expected value not provided"], "intent_recognition": ["The agent's reply is completely off‑topic—asking about booking a hotel/car and making incorrect assumptions about arrival dates (assumes arrival 2025-11-16 and \"second day\" 2025-11-17) while failing to provide any requested flight details (scheduled departure in local and UTC ISO 8601, current status, ETD/ETA, terminal/gate)."], "response_consistency": ["The assistant's reply is off‑topic—asking booking clarifications and assuming \"second day\" = 2025-11-17 (arrival 2025-11-16)—which conflicts with the user's request about Flight AA123 on 2025-11-20 and provides none of the requested flight details."], "response_clarity": ["The assistant's message is clear and organized—especially the three confirmation bullets asking date, preferences, and payment—but it fails to address the user's flight-information request (scheduled times, status, terminal/gate), so it's not actionable for the user's stated need."]}}, {"trace_id": "ec8723d4-911d-4cf8-87e2-e0f12b924ab8", "iteration": 0, "persona": "expert_user", "success": true, "duration_ms": 272011.3878250122, "scores": {"not_empty": 1.0, "latency_budget": 0.005514475007807268, "keyword_quality": 0.75, "similarity_to_expected": 0.0, "intent_recognition": 0.2, "response_consistency": 0.3, "response_clarity": 0.5}, "final_score": 0.3854637653858165, "pass": false, "reasons": {"latency_budget": ["duration 272011.4ms exceeds budget 1500.0ms"], "keyword_quality": ["missing keywords: help"], "similarity_to_expected": ["expected value not provided"], "intent_recognition": ["The agent failed to extract or convert the flight departure time requested—instead it asked unrelated booking clarifications and only mentioned an arrival time, so it did not address the user's core intent."], "response_consistency": ["The assistant's reply focuses on booking clarifications and states \"I have you arriving 2025-11-16 at 18:34 (local),\" which does not address the user's request to pull the scheduled departure time from the itinerary or show it in both local time and UTC (missing the requested flight departure time and UTC conversion)."], "response_clarity": ["The reply is clear and organized with actionable clarifying questions (e.g., the bullet list and \"I have you arriving 2025-11-16 at 18:34 (local)...\" line), but it fails to provide the requested scheduled departure time or a UTC conversion, which is the critical missing detail."]}}, {"trace_id": "cf433ff9-18c0-47f1-9eb4-f79bba1ea809", "iteration": 0, "persona": "expert_user", "success": true, "duration_ms": 274857.5689792633, "scores": {"not_empty": 1.0, "latency_budget": 0.005457371996596418, "keyword_quality": 0.75, "similarity_to_expected": 0.0, "intent_recognition": 0.1, "response_consistency": 0.2, "response_clarity": 0.3}, "final_score": 0.3162242110763995, "pass": false, "reasons": {"latency_budget": ["duration 274857.6ms exceeds budget 1500.0ms"], "keyword_quality": ["missing keywords: help"], "similarity_to_expected": ["expected value not provided"], "intent_recognition": ["The agent completely missed the request — instead of returning scheduled departure times (local and UTC ISO 8601) and the API endpoint/headers for PNR X1Z2Y3, it responded with unrelated booking clarification questions and arrival assumptions."], "response_consistency": ["The assistant's reply is inconsistent with the request — it asks booking clarifications and references arrival into BSL on 2025-11-16 instead of returning the flight's scheduled departure time in local/UTC ISO 8601 and the API endpoint/headers."], "response_clarity": ["The assistant's clarifying questions are clear (e.g., \"I show your arrival into BSL on 2025-11-16...\") but it completely fails to provide the requested flight departure time in local/UTC ISO 8601 and the API endpoint + headers, which are the critical missing details."]}}];
+    const criteria = {"performance": {"all_traces_successful": {"met": true, "expected": true, "total_traces": 6, "successful_traces": 6}, "avg_response_time": {"met": false, "average_ms": 329487.1485233307, "threshold_ms": 2000, "trace_count": 6}}, "quality": {"intent_recognition": {"met": false, "average_score": 0.13333333333333333, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}, "response_consistency": {"met": false, "average_score": 0.2833333333333333, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}, "response_clarity": {"met": false, "average_score": 0.35, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}}, "functionality": {}, "overall_success": false};
+    const analysis = {"recommendations": [{"title": "Boost overall pass rate", "priority": "high", "summary": "Pass rate is 0.0% (goal 70.0%). Most common failure reason: missing keywords: help.", "metrics": {"pass_rate": 0.0, "threshold": 0.7}}, {"title": "Target persona 'novice_user'", "priority": "medium", "summary": "novice_user pass rate is 0.0% (goal 70.0%). Prioritize playbooks or prompts for this persona.", "metrics": {"persona": "novice_user", "pass_rate": 0.0, "threshold": 0.7}}, {"title": "Target persona 'expert_user'", "priority": "medium", "summary": "expert_user pass rate is 0.0% (goal 70.0%). Prioritize playbooks or prompts for this persona.", "metrics": {"persona": "expert_user", "pass_rate": 0.0, "threshold": 0.7}}]};
+
+    const state = {
+      activeTab: "summary",
+      personaFilter: "all",
+    };
+
+    function setActiveTab(tab) {
+      state.activeTab = tab;
+      document.querySelectorAll("[data-tab-panel]").forEach((panel) => {
+        panel.classList.toggle("hidden", panel.dataset.tabPanel !== tab);
+      });
+      document.querySelectorAll("[data-tab-button]").forEach((button) => {
+        const isActive = button.dataset.tabButton === tab;
+        button.classList.toggle("bg-sky-500/20", isActive);
+        button.classList.toggle("text-sky-200", isActive);
+        button.classList.toggle("border-sky-400", isActive);
+        button.classList.toggle("bg-slate-800", !isActive);
+        button.classList.toggle("text-slate-300", !isActive);
+        button.classList.toggle("border-slate-700", !isActive);
+        button.setAttribute("aria-selected", String(isActive));
+      });
+    }
+
+    function initTabs() {
+      document.querySelectorAll("[data-tab-button]").forEach((button) => {
+        button.addEventListener("click", () => {
+          setActiveTab(button.dataset.tabButton);
+        });
+      });
+      setActiveTab(state.activeTab);
+    }
+
+    function formatPercent(value) {
+      if (value == null) return "—";
+      return `${(value * 100).toFixed(1)}%`;
+    }
+
+    function toTitleCase(value) {
+      return (value || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+
+    function renderSummaryCards() {
+      const container = document.getElementById("summaryCards");
+      if (!container || !summary) return;
+      const cards = [
+        { label: "Total Traces", value: summary.total_traces ?? "—" },
+        { label: "Pass Rate", value: formatPercent(summary.pass_rate) },
+        {
+          label: "Average Score",
+          value: summary.average_score != null ? summary.average_score.toFixed(3) : "—",
+        },
+        {
+          label: "Threshold",
+          value: summary.threshold != null ? summary.threshold.toFixed(2) : "—",
+        },
+      ];
+      if (summary.llm_calls != null) {
+        cards.push({
+          label: "LLM Calls",
+          value: `${summary.llm_calls} (sample ${(summary.llm_sample_rate ?? 0).toFixed(2)})`,
+        });
+      }
+      if (summary.overall_success !== undefined) {
+        cards.push({
+          label: "Overall Success",
+          value: summary.overall_success ? "✅ Met" : "❌ Not Met",
+        });
+      }
+      container.innerHTML = cards
+            .map(
+          (card) => `
+            <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 shadow-inner">
+              <p class="text-slate-400 text-xs uppercase tracking-wide">${card.label}</p>
+              <p class="text-2xl font-semibold mt-2">${card.value}</p>
+                </div>
+              `
+            )
+        .join("");
+    }
+
+    function renderCriteria() {
+      const container = document.getElementById("criteriaList");
+      if (!container || !criteria || !Object.keys(criteria).length) {
+        if (container) container.innerHTML = "<p class='text-sm text-slate-400'>No criteria configured.</p>";
+        return;
+      }
+      const overall = criteria.overall_success;
+      container.innerHTML = `
+        ${
+          overall !== undefined
+            ? `<p class="text-sm text-slate-300">Overall success: ${
+                overall ? "✅ Met" : "❌ Not met"
+              }</p>`
+            : ""
+        }
+      `;
+      Object.entries(criteria)
+        .filter(([key]) => key !== "overall_success")
+        .forEach(([section, payload]) => {
+          if (!payload) return;
+          const checks = Object.entries(payload);
+          if (!checks.length) return;
+        const sectionTitle = section.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+          const wrapper = document.createElement("div");
+          wrapper.className = "bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2";
+          wrapper.innerHTML = `<h3 class="text-lg font-semibold">${sectionTitle}</h3>`;
+        const list = document.createElement("ul");
+        list.className = "space-y-1 text-sm text-slate-300";
+        for (const [name, details] of checks) {
+            const prettyName = toTitleCase(name);
+          const status = details.met === true ? "✅ Met" : details.met === false ? "❌ Not met" : "⚪️ Not evaluated";
+            const meta = { ...details };
+            delete meta.met;
+            const extra =
+              Object.keys(meta).length > 0 ? `<span class="text-slate-400"> ${JSON.stringify(meta)}</span>` : "";
+            list.innerHTML += `<li>${status} · ${prettyName}${extra}</li>`;
+        }
+          wrapper.appendChild(list);
+          container.appendChild(wrapper);
+        });
+    }
+
+    function renderRecommendations() {
+      const container = document.getElementById("recommendations");
+      if (!container) return;
+      const recommendations = (analysis && analysis.recommendations) || [];
+      if (!recommendations.length) {
+        container.innerHTML = "<p class='text-sm text-slate-400'>No blocking action items detected.</p>";
+        return;
+      }
+      container.innerHTML = recommendations
+        .map(
+          (item) => `
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2 shadow-inner">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-lg font-semibold">${item.title}</h3>
+                <span class="text-xs px-2 py-1 rounded-full border ${
+                  item.priority === "high"
+                    ? "border-rose-400 text-rose-300"
+                    : item.priority === "medium"
+                    ? "border-amber-400 text-amber-300"
+                    : "border-slate-500 text-slate-300"
+                }">${item.priority?.toUpperCase() || "MEDIUM"}</span>
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed">${item.summary || ""}</p>
+            </article>
+          `
+        )
+        .join("");
+    }
+
+    function renderTopReasons() {
+      const container = document.getElementById("topReasons");
+      if (!container) return;
+      const reasons = summary.top_reasons || [];
+      if (!Array.isArray(reasons) || !reasons.length) {
+        container.innerHTML = "<p class='text-sm text-slate-400'>No failure reasons recorded.</p>";
+        return;
+      }
+      container.innerHTML = reasons
+        .map(
+          ([reason, count]) => `
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+              <p class="text-sm text-slate-300">${reason}</p>
+              <p class="mt-2 text-2xl font-semibold">${count}</p>
+            </div>
+          `
+        )
+        .join("");
+    }
+
+    function renderPersonaSummary() {
+      const container = document.getElementById("personaSummary");
+      if (!container) return;
+      const breakdown = summary.persona_breakdown || {};
+      const entries = Object.entries(breakdown);
+      if (!entries.length) {
+        container.innerHTML = "<p class='text-sm text-slate-400'>Persona breakdown is not available.</p>";
+        return;
+      }
+      container.innerHTML = entries
+        .map(
+          ([persona, stats]) => `
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-1">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">${persona}</h3>
+                <span class="text-xs text-slate-400">n=${stats.count ?? 0}</span>
+              </div>
+              <p class="text-sm text-slate-300">Pass rate: ${formatPercent(stats.pass_rate)}</p>
+              <p class="text-sm text-slate-300">Average score: ${
+                stats.average_score != null ? stats.average_score.toFixed(3) : "—"
+              }</p>
+            </div>
+          `
+        )
+        .join("");
+    }
+
+    function renderAnalysisContent() {
+      const container = document.getElementById("analysisContent");
+      if (!container) return;
+      if (!analysis || !Object.keys(analysis).length) {
+        container.innerHTML = "<p class='text-sm text-slate-400'>No additional analysis computed.</p>";
+        return;
+      }
+      const entries = Object.entries(analysis).filter(([key]) => key !== "recommendations");
+      if (!entries.length) {
+        container.innerHTML = "<p class='text-sm text-slate-400'>No additional analysis computed.</p>";
+        return;
+      }
+      container.innerHTML = entries
+        .map(
+          ([key, value]) => `
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+              <h3 class="text-lg font-semibold mb-2">${toTitleCase(key)}</h3>
+              <pre class="text-xs whitespace-pre-wrap break-words">${JSON.stringify(value, null, 2)}</pre>
+            </div>
+          `
+        )
+        .join("");
+    }
+
+    function renderScoreChart() {
+      if (typeof Chart === "undefined" || !Array.isArray(perTrace) || !perTrace.length) return;
+      const ctx = document.getElementById("scoreChart");
+      if (!ctx) return;
+      const labels = perTrace.map((item) => item.trace_id ?? item.iteration ?? "");
+      const data = perTrace.map((item) => item.final_score ?? 0);
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Final Score",
+              data,
+              tension: 0.3,
+              fill: false,
+              borderColor: "#38bdf8",
+              backgroundColor: "#38bdf8",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+          },
+          scales: {
+            y: { suggestedMin: 0, suggestedMax: 1 },
+          },
+        },
+      });
+    }
+
+    function initTraceFilter() {
+      const select = document.getElementById("tracePersonaFilter");
+      if (!select) return;
+      const personas = Array.from(
+        new Set(
+          perTrace
+            .map((item) => item.persona || "default")
+            .filter(Boolean)
+        )
+      ).sort();
+      select.innerHTML = `<option value="all">All personas</option>` + personas.map((p) => `<option value="${p}">${p}</option>`).join("");
+      select.value = state.personaFilter;
+      select.addEventListener("change", (event) => {
+        state.personaFilter = event.target.value;
+        renderTraceTable();
+      });
+      renderTraceTable();
+    }
+
+    function renderTraceTable() {
+      const table = document.getElementById("traceTable");
+      const rawJson = document.getElementById("rawTraceJson");
+      if (!table) return;
+      const tbody = table.querySelector("tbody");
+      const filtered = perTrace.filter((item) => {
+        if (state.personaFilter === "all") return true;
+        const persona = item.persona || "default";
+        return persona === state.personaFilter;
+      });
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-sm text-slate-400">No traces match the selected filters.</td></tr>`;
+      } else {
+        tbody.innerHTML = filtered
+          .map(
+            (item) => `
+              <tr class="hover:bg-slate-900/60">
+                <td class="px-4 py-3">${item.trace_id ?? "—"}</td>
+                <td class="px-4 py-3">${item.persona ?? "—"}</td>
+                <td class="px-4 py-3">${item.iteration ?? "—"}</td>
+                <td class="px-4 py-3">${item.final_score != null ? item.final_score.toFixed(3) : "—"}</td>
+                <td class="px-4 py-3">${item.pass ? "✅" : "❌"}</td>
+                <td class="px-4 py-3">
+                  ${
+                    item.reasons
+                      ? Object.entries(item.reasons)
+                          .map(([key, value]) => `<span class="block text-xs text-slate-300">${key}: ${Array.isArray(value) ? value.join(", ") : value}</span>`)
+                          .join("")
+                      : "<span class='text-xs text-slate-500'>—</span>"
+                  }
+                </td>
+              </tr>
+            `
+          )
+          .join("");
+      }
+      if (rawJson) {
+        rawJson.textContent = JSON.stringify(filtered, null, 2);
+      }
+      const hint = document.getElementById("traceCountHint");
+      if (hint) {
+        const total = perTrace.length;
+        const shown = filtered.length;
+        const suffix = total === 1 ? "" : "s";
+        hint.textContent = `${shown} of ${total} trace${suffix} shown`;
+    }
+    }
+
+    initTabs();
+    renderSummaryCards();
+    renderCriteria();
+    renderRecommendations();
+    renderScoreChart();
+    renderTopReasons();
+    renderPersonaSummary();
+    renderAnalysisContent();
+    initTraceFilter();
+  </script>
+</body>
+</html>

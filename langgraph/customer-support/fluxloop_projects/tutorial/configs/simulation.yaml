@@ -13,7 +13,7 @@ seed: 42                  # Set for reproducibility; remove for randomness
 runner:
   target: "customer_support.main:run_customer_support_session"
   working_directory: .
-  python_path:["src"]
+  python_path: ["src"]
   timeout_seconds: 120
   max_retries: 3
   args:
@@ -30,12 +30,12 @@ replay_args:
   override_param_path: data.content
 
 multi_turn:
-  enabled: false              # Enable to drive conversations via supervisor
-  max_turns: 8                # Safety cap on total turns per conversation
+  enabled: true              # Enable to drive conversations via supervisor
+  max_turns: 10                # Safety cap on total turns per conversation
   auto_approve_tools: true    # Automatically approve tool calls when supported
   persona_override: null      # Force a specific persona id (optional)
   supervisor:
-    provider: openai          # openai (LLM generated) | mock (scripted playback)
+    provider: mock          # openai (LLM generated) | mock (scripted playback)
     model: gpt-5-mini
     system_prompt: |
       You supervise an AI assistant supporting customers.
@@ -43,7 +43,21 @@ multi_turn:
       When continuing, craft the next user message consistent with the persona.
       When terminating, explain the reason and provide any closing notes.
     metadata:
-      scripted_questions: []  # Array of user utterances for sequential playback (e.g., ["First question", "Second question", ...])
+      scripted_questions: [
+        "Am i allowed to update my flight to something sooner? I want to leave later today.",
+        "Update my flight to sometime next week then",
+        "The next available option is great",
+        "what about lodging and transportation?",
+        "Yeah i think i'd like an affordable hotel for my week-long stay (7 days). And I'll want to rent a car.",
+        "OK could you place a reservation for your recommended hotel? It sounds nice.",
+        "yes go ahead and book anything that's moderate expense and has availability.",
+        #"Now for a car, what are my options?",
+        # "Awesome let's just get the cheapest option. Go ahead and book for 7 days",
+        # "Cool so now what recommendations do you have on excursions?",
+        # "Are they available while I'm there?",
+        # "interesting - i like the museums, what options are there? ",
+        "OK great pick one and book it for my second day there."
+      ]  # Array of user utterances for sequential playback (e.g., ["First question", "Second question", ...])
       mock_decision: terminate        # Fallback when no scripted questions remain
       mock_reason: script_complete    # Termination reason for scripted runs
       mock_closing: "Thanks for the help. I have no further questions."

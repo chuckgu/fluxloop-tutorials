@@ -16,6 +16,17 @@ class Assistant:
         current_state = dict(state)
         while True:
             result = self.runnable.invoke(current_state)
+            tool_calls = getattr(result, "tool_calls", None)
+            if tool_calls and len(tool_calls) > 1:
+                messages = current_state["messages"] + [
+                    (
+                        "user",
+                        "Delegate to only one specialized assistant at a time. "
+                        "Choose the highest-priority task and try again.",
+                    )
+                ]
+                current_state = {**current_state, "messages": messages}
+                continue
             if not result.tool_calls and (
                 not result.content
                 or isinstance(result.content, list)

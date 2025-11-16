@@ -2,7 +2,7 @@
   "total_traces": 6,
   "passed_traces": 0,
   "pass_rate": 0.0,
-  "average_score": 0.3462282281498797,
+  "average_score": 0.35263848456013613,
   "threshold": 0.7,
   "aggregate_method": "weighted_sum",
   "evaluators": [
@@ -40,33 +40,33 @@
       "count": 6
     },
     "intent_recognition": {
-      "average": 0.13333333333333333,
+      "average": 0.15000000000000002,
       "min": 0.1,
       "max": 0.2,
       "count": 6
     },
     "response_consistency": {
-      "average": 0.2833333333333333,
+      "average": 0.23333333333333334,
       "min": 0.2,
-      "max": 0.5,
+      "max": 0.3,
       "count": 6
     },
     "response_clarity": {
-      "average": 0.35,
-      "min": 0.3,
-      "max": 0.5,
+      "average": 0.43333333333333335,
+      "min": 0.2,
+      "max": 0.9,
       "count": 6
     }
   },
   "persona_breakdown": {
     "novice_user": {
       "count": 3,
-      "average_score": 0.3481039940544965,
+      "average_score": 0.3557963017468042,
       "pass_rate": 0.0
     },
     "expert_user": {
       "count": 3,
-      "average_score": 0.3443524622452629,
+      "average_score": 0.34948066737346806,
       "pass_rate": 0.0
     }
   },
@@ -84,15 +84,15 @@
       1
     ],
     [
-      "The agent completely missed the user's intent about checking a flight time—providing unrelated booking questions instead of answering how to find/verify a flight time or asking clarifying flight details.",
+      "The agent missed the user's core intent of finding/checking a flight time and instead asked unrelated booking questions and assumed a \"second day\" date without requesting flight details or explaining how to check flight times.",
       1
     ],
     [
-      "The assistant's reply continues a booking flow from the transcript rather than answering the user's current question about flight time, and it makes an unsupported assumption by stating \"I’ll use your arrival info to set the 'second day' as 2025-11-17\" without any provided arrival details.",
+      "The assistant's reply about booking options (e.g., \"Which of the options do you mean...\") and setting \"second day\" as 2025-11-17 is unrelated to the user's question about flight time and fails to explain how to check it.",
       1
     ],
     [
-      "Response is off‑target—the assistant jumps to booking (e.g., \"I can do that — I just need a couple quick details before I book.\") instead of answering how to check flight time and omits actionable steps like checking your confirmation email, airline app/website, or providing a booking/reference number.",
+      "The assistant is clear and organized in its booking questions but fails to address the user's flight-time question or give steps to check it — the misalignment is driven by the opening clarifying bullet (\"1) Which of the options do you mean...\") which shows it jumped to booking instead of answering the user's request.",
       1
     ],
     [
@@ -100,15 +100,15 @@
       1
     ],
     [
-      "The agent completely missed the user's intent—rather than telling the flight departure time or explaining how to check it without a booking/reference number, it proceeded to offer and confirm booking a tour (\"I can do that — I’ll pick a popular option and book it...\"), failing to ask for any flight details or provide relevant methods (airline/airport lookup by name/email, mobile app, check-in counter, etc.).",
+      "The agent completely missed the user's intent—requesting flight departure time and methods to check without a booking number—and instead gave unrelated tour-booking confirmation questions, ignoring the core query and necessary guidance.",
       1
     ],
     [
-      "The assistant's reply is largely irrelevant to the user's question and makes an ungrounded claim (\"that would be 2025-11-17, since your flight arrives 2025-11-16\") without prior info, failing to answer how to check a flight without a booking/reference number.",
+      "The assistant’s reply is off-topic and doesn't answer the flight-departure question — it instead discusses booking a tour (\"I can do that — I’ll pick a popular option and book it for the second day of your trip...\"), so it fails to address the user's request.",
       1
     ],
     [
-      "The assistant's bulleted confirmation questions (1–4) are clear and organized for booking a tour, but it entirely fails to answer the user's flight-time question or provide any steps for checking a flight without a booking/reference number, the key missing detail.",
+      "The assistant's language and numbered confirmation steps are clear and actionable for booking the tour, but it fails to answer the user's actual question—there is no sentence or bullet explaining the flight departure time or how to check a flight without a booking/reference number, which is the key missing detail.",
       1
     ]
   ],
@@ -131,23 +131,23 @@
     "quality": {
       "intent_recognition": {
         "met": false,
-        "average_score": 0.13333333333333333,
+        "average_score": 0.15000000000000002,
         "threshold": 0.7,
         "pass_rate": 0.0,
         "trace_count": 6
       },
       "response_consistency": {
         "met": false,
-        "average_score": 0.2833333333333333,
+        "average_score": 0.23333333333333334,
         "threshold": 0.7,
         "pass_rate": 0.0,
         "trace_count": 6
       },
       "response_clarity": {
         "met": false,
-        "average_score": 0.35,
+        "average_score": 0.43333333333333335,
         "threshold": 0.7,
-        "pass_rate": 0.0,
+        "pass_rate": 0.16666666666666666,
         "trace_count": 6
       }
     },

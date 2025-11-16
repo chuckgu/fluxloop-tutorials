@@ -3,7 +3,7 @@
 - Total traces: 6
 - Passed traces: 0
 - Pass rate: 0.0% (threshold 0.7)
-- Average score: 0.346
+- Average score: 0.353
 - LLM calls: 18 (sample rate 1.00)
 - Overall success: ❌ (not met)
 
@@ -19,9 +19,9 @@ while meeting latency and accuracy targets.
 - ❌ Avg Response Time: Not met {"average_ms": 329487.1485233307, "threshold_ms": 2000, "trace_count": 6}
 
 ### Quality
-- ❌ Intent Recognition: Not met {"average_score": 0.13333333333333333, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}
-- ❌ Response Consistency: Not met {"average_score": 0.2833333333333333, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}
-- ❌ Response Clarity: Not met {"average_score": 0.35, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}
+- ❌ Intent Recognition: Not met {"average_score": 0.15000000000000002, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}
+- ❌ Response Consistency: Not met {"average_score": 0.23333333333333334, "threshold": 0.7, "pass_rate": 0.0, "trace_count": 6}
+- ❌ Response Clarity: Not met {"average_score": 0.43333333333333335, "threshold": 0.7, "pass_rate": 0.16666666666666666, "trace_count": 6}
 
 ## Additional Analysis
 
@@ -38,20 +38,20 @@ while meeting latency and accuracy targets.
 | latency_budget | 0.005 | 0.004 | 0.006 | 6 |
 | keyword_quality | 0.750 | 0.750 | 0.750 | 6 |
 | similarity_to_expected | 0.000 | 0.000 | 0.000 | 6 |
-| intent_recognition | 0.133 | 0.100 | 0.200 | 6 |
-| response_consistency | 0.283 | 0.200 | 0.500 | 6 |
-| response_clarity | 0.350 | 0.300 | 0.500 | 6 |
+| intent_recognition | 0.150 | 0.100 | 0.200 | 6 |
+| response_consistency | 0.233 | 0.200 | 0.300 | 6 |
+| response_clarity | 0.433 | 0.200 | 0.900 | 6 |
 
 ## Persona Breakdown
 
 ### novice_user
 - Count: 3
-- Average score: 0.348
+- Average score: 0.356
 - Pass rate: 0.0%
 
 ### expert_user
 - Count: 3
-- Average score: 0.344
+- Average score: 0.349
 - Pass rate: 0.0%
 
 ## Top Failure Reasons
@@ -59,10 +59,10 @@ while meeting latency and accuracy targets.
 - missing keywords: help (6)
 - expected value not provided (6)
 - duration 393777.2ms exceeds budget 1500.0ms (1)
-- The agent completely missed the user's intent about checking a flight time—providing unrelated booking questions instead of answering how to find/verify a flight time or asking clarifying flight details. (1)
-- The assistant's reply continues a booking flow from the transcript rather than answering the user's current question about flight time, and it makes an unsupported assumption by stating "I’ll use your arrival info to set the 'second day' as 2025-11-17" without any provided arrival details. (1)
-- Response is off‑target—the assistant jumps to booking (e.g., "I can do that — I just need a couple quick details before I book.") instead of answering how to check flight time and omits actionable steps like checking your confirmation email, airline app/website, or providing a booking/reference number. (1)
+- The agent missed the user's core intent of finding/checking a flight time and instead asked unrelated booking questions and assumed a "second day" date without requesting flight details or explaining how to check flight times. (1)
+- The assistant's reply about booking options (e.g., "Which of the options do you mean...") and setting "second day" as 2025-11-17 is unrelated to the user's question about flight time and fails to explain how to check it. (1)
+- The assistant is clear and organized in its booking questions but fails to address the user's flight-time question or give steps to check it — the misalignment is driven by the opening clarifying bullet ("1) Which of the options do you mean...") which shows it jumped to booking instead of answering the user's request. (1)
 - duration 313644.5ms exceeds budget 1500.0ms (1)
-- The agent completely missed the user's intent—rather than telling the flight departure time or explaining how to check it without a booking/reference number, it proceeded to offer and confirm booking a tour ("I can do that — I’ll pick a popular option and book it..."), failing to ask for any flight details or provide relevant methods (airline/airport lookup by name/email, mobile app, check-in counter, etc.). (1)
-- The assistant's reply is largely irrelevant to the user's question and makes an ungrounded claim ("that would be 2025-11-17, since your flight arrives 2025-11-16") without prior info, failing to answer how to check a flight without a booking/reference number. (1)
-- The assistant's bulleted confirmation questions (1–4) are clear and organized for booking a tour, but it entirely fails to answer the user's flight-time question or provide any steps for checking a flight without a booking/reference number, the key missing detail. (1)
+- The agent completely missed the user's intent—requesting flight departure time and methods to check without a booking number—and instead gave unrelated tour-booking confirmation questions, ignoring the core query and necessary guidance. (1)
+- The assistant’s reply is off-topic and doesn't answer the flight-departure question — it instead discusses booking a tour ("I can do that — I’ll pick a popular option and book it for the second day of your trip..."), so it fails to address the user's request. (1)
+- The assistant's language and numbered confirmation steps are clear and actionable for booking the tour, but it fails to answer the user's actual question—there is no sentence or bullet explaining the flight departure time or how to check a flight without a booking/reference number, which is the key missing detail. (1)

@@ -25,3 +25,5 @@ travel2.backup.sqlite
 dist/
 build/
 
+.fluxloop/
+.vscode/

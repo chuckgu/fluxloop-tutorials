@@ -30,7 +30,7 @@ replay_args:
   override_param_path: data.content
 
 multi_turn:
-  enabled: true              # Enable to drive conversations via supervisor
+  enabled: false              # Enable to drive conversations via supervisor
   max_turns: 10                # Safety cap on total turns per conversation
   auto_approve_tools: true    # Automatically approve tool calls when supported
   persona_override: null      # Force a specific persona id (optional)

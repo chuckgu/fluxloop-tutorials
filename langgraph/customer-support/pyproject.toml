@@ -20,7 +20,7 @@ dependencies = [
     "pytz>=2023.3",
     "typing-extensions>=4.8.0",
     "fluxloop==0.1.6",
-    "fluxloop-cli==0.2.28",
+    "fluxloop-cli==0.2.29",
     "fluxloop-mcp>=0.1.0",
 ]
 

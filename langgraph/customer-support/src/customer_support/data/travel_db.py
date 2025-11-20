@@ -72,7 +72,7 @@ def update_dates(
             f"Backup database not found at {backup}. Run download_database first."
         )
 
-    shutil.copy(backup, database)
+    # shutil.copy(backup, database)
     conn = sqlite3.connect(database)
 
     try:

@@ -317,7 +317,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fluxloop", specifier = "==0.1.6" },
-    { name = "fluxloop-cli", specifier = "==0.2.25" },
+    { name = "fluxloop-cli", specifier = "==0.2.27" },
     { name = "fluxloop-mcp", specifier = ">=0.1.0" },
     { name = "langchain-anthropic", specifier = ">=0.1.0" },
     { name = "langchain-community", specifier = ">=0.3.0" },
@@ -384,7 +384,7 @@ wheels = [
 
 [[package]]
 name = "fluxloop-cli"
-version = "0.2.25"
+version = "0.2.27"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fluxloop" },
@@ -396,9 +396,9 @@ dependencies = [
     { name = "ruamel-yaml" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/18/e7/790edf1f85b556654756101cc0937c4bac1394d3dc4ecd07683a82612be5/fluxloop_cli-0.2.25.tar.gz", hash = "sha256:8db69c3045cebf547c2ef27212e0090ac1eb2fa0ce3e229051b76edefa4d46ec", size = 93399, upload-time = "2025-11-16T05:48:04.011Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/59/95/3581786b1908795195aa4101d83e2b72aae1f59f3a55dd469e68b75fa64f/fluxloop_cli-0.2.27.tar.gz", hash = "sha256:dfc86284f20c35ff5bf326c508887e07267cc4332297e1fbfd786136333cacc1", size = 99439, upload-time = "2025-11-17T04:55:37.174Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f7/b1/5fc3c689b2b930cf6d7f99f4744a95f7f08d6cd1b2b0430569f93dd5773f/fluxloop_cli-0.2.25-py3-none-any.whl", hash = "sha256:1f575eb9b938a1019bba88d9ebf7368238817909c95b38cf55059d4086513036", size = 101584, upload-time = "2025-11-16T05:48:02.239Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/48/4a2b1f4fabe900f86d27c760161e6317d432a5e1abb088c0eaeee673ead9/fluxloop_cli-0.2.27-py3-none-any.whl", hash = "sha256:c0b17e6297e92712427850aa4e98c4ed2829c3edb5849e0886aa53c5c13acc9e", size = 106229, upload-time = "2025-11-17T04:55:35.429Z" },
 ]
 
 [[package]]

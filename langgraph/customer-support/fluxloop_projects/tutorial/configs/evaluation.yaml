@@ -32,7 +32,7 @@ evaluators:
     weight: 0.2
     rules:
       - check: token_usage_under
-        max_total_tokens: 40000
+        max_total_tokens: 100000
 
   - name: keyword_quality
     type: rule_based

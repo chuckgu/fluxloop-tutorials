@@ -1,0 +1,269 @@
+{
+  "name": "tutorial_experiment",
+  "date": "2025-11-17T16:00:17.330414",
+  "config": {
+    "name": "tutorial_experiment",
+    "description": "AI agent simulation experiment",
+    "version": "1.0.0",
+    "iterations": 1,
+    "parallel_runs": 1,
+    "seed": 42,
+    "run_delay_seconds": 0.0,
+    "personas": [
+      {
+        "name": "novice_user",
+        "description": "A user new to the system",
+        "characteristics": [
+          "Asks basic questions",
+          "May use incorrect terminology",
+          "Needs detailed explanations"
+        ],
+        "language": "en",
+        "expertise_level": "novice",
+        "goals": [
+          "Understand system capabilities",
+          "Complete basic tasks"
+        ],
+        "constraints": [],
+        "custom_attributes": {}
+      },
+      {
+        "name": "expert_user",
+        "description": "An experienced power user",
+        "characteristics": [
+          "Uses technical terminology",
+          "Asks complex questions",
+          "Expects efficient responses"
+        ],
+        "language": "en",
+        "expertise_level": "expert",
+        "goals": [
+          "Optimize workflows",
+          "Access advanced features"
+        ],
+        "constraints": [],
+        "custom_attributes": {}
+      }
+    ],
+    "variation_strategies": [
+      "rephrase",
+      "verbose",
+      "error_prone"
+    ],
+    "variation_count": 2,
+    "variation_temperature": 0.7,
+    "variation_model": "gpt-3.5-turbo",
+    "base_inputs": [
+      {
+        "input": "Hi there, what time is my flight?",
+        "expected_intent": "flight_time"
+      }
+    ],
+    "inputs_file": "inputs/generated.yaml",
+    "input_generation": {
+      "mode": "llm",
+      "llm": {
+        "enabled": true,
+        "provider": "openai",
+        "model": "gpt-5-mini",
+        "strategy_prompts": {},
+        "max_outputs": 3,
+        "temperature": 0.7,
+        "top_p": 1.0,
+        "frequency_penalty": 0.0,
+        "presence_penalty": 0.0,
+        "max_tokens": 1024,
+        "request_timeout": 60,
+        "batch_size": 1,
+        "metadata": {}
+      }
+    },
+    "runner": {
+      "module_path": "customer_support.main",
+      "function_name": "run_customer_support_session",
+      "target": "customer_support.main:run_customer_support_session",
+      "factory_kwargs": {},
+      "working_directory": ".",
+      "python_path": [
+        "src"
+      ],
+      "environment_vars": {},
+      "setup_commands": [],
+      "timeout_seconds": 120,
+      "max_retries": 3,
+      "retry_delay": 5,
+      "use_docker": false,
+      "docker_volumes": []
+    },
+    "replay_args": {
+      "enabled": false,
+      "recording_file": "recordings/args_recording.jsonl",
+      "callable_providers": {
+        "send_message_callback": "builtin:collector.send",
+        "send_error_callback": "builtin:collector.error"
+      },
+      "override_param_path": "data.content"
+    },
+    "evaluators": [
+      {
+        "name": "not_empty",
+        "type": "rule_based",
+        "enabled": true,
+        "rules": [
+          {
+            "check": "output_not_empty"
+          }
+        ],
+        "weight": 0.2,
+        "metadata": {}
+      },
+      {
+        "name": "token_budget",
+        "type": "rule_based",
+        "enabled": true,
+        "rules": [
+          {
+            "check": "token_usage_under",
+            "max_total_tokens": 100000
+          }
+        ],
+        "weight": 0.2,
+        "metadata": {}
+      },
+      {
+        "name": "keyword_quality",
+        "type": "rule_based",
+        "enabled": true,
+        "rules": [
+          {
+            "check": "contains",
+            "target": "output",
+            "keywords": [
+              "help",
+              "assist"
+            ]
+          },
+          {
+            "check": "not_contains",
+            "target": "output",
+            "keywords": [
+              "error",
+              "sorry"
+            ]
+          }
+        ],
+        "weight": 0.1,
+        "metadata": {}
+      },
+      {
+        "name": "similarity_to_expected",
+        "type": "rule_based",
+        "enabled": false,
+        "rules": [
+          {
+            "check": "similarity",
+            "target": "output",
+            "expected_path": "metadata.expected",
+            "method": "difflib"
+          }
+        ],
+        "weight": 0.1,
+        "metadata": {}
+      },
+      {
+        "name": "intent_recognition",
+        "type": "llm_judge",
+        "enabled": true,
+        "model": "gpt-5-mini",
+        "prompt_template": "# Intent Recognition Quality Review\n# Provide a JSON-friendly rating from 1-10 inclusive.\n# Respond using the format: 'Score: <number>/10\\nReason: <short explanation>'\nSystem role:\nYou are an expert QA analyst reviewing customer-support conversations with a focus on intent alignment.\n\nContext:\n- Persona: {persona}\n- User input: {input}\n- Agent output: {output}\n- Additional metadata: {metadata}\n- Conversation history (if any): {history}\n- Project guidelines or playbooks: {guidelines}\n\nTask:\nEvaluate how accurately the agent identified the user's intent and aligned the response with that intent.\nConsider:\n1. Does the response address the true intent behind the request, including implied goals?\n2. Are any key goals, constraints, policies, or required escalations ignored?\n3. Does the tone and stance match persona expectations and scenario urgency?\n4. Does the agent avoid repetition while providing concrete, sequenced next steps where appropriate?\n\nReasoning notes should point to specific sentences or omissions when deducting points.\n\nScore each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on intent recognition when judging.\nOutput format:\nScore: <number>/10\nReason: <one sentence summary>\nOnly produce the score and reason lines.\n",
+        "rules": [],
+        "weight": 0.25,
+        "metadata": {
+          "sample_response": "Score: 8/10\nReason: Intent is identified and tone matches, but the response skips the required escalation checklist.\n"
+        }
+      },
+      {
+        "name": "response_consistency",
+        "type": "llm_judge",
+        "enabled": true,
+        "model": "gpt-5-mini",
+        "prompt_template": "# Response Consistency Review\n# Provide a JSON-friendly rating from 1-10 inclusive.\n# Respond using the format: 'Score: <number>/10\\nReason: <short explanation>'\nSystem role:\nYou ensure agents keep answers aligned with established guidance and previous explanations.\n\nContext:\n- Persona: {persona}\n- Current user input: {input}\n- Agent output: {output}\n- Conversation history (if any): {history}\n- Project notes: {guidelines}\n- Known policies or product constraints: {policy_context}\n\nTask:\nJudge the response for consistency and coherence.\nConsider:\n1. Are statements compatible with prior agent replies and logged commitments?\n2. Does messaging stay aligned with supplied project guidelines and policy context?\n3. Are there contradictions, loops, or repeated phrases that add noise or confusion?\n4. Does the response stay concise while covering required policy reminders, caveats, or disclaimers?\n\nWhen deducting points, cite the conflicting sentence or missing alignment in the reason string.\n\nScore each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on response consistency when judging.\nOutput format:\nScore: <number>/10\nReason: <one sentence summary>\nOnly produce the score and reason lines.\n",
+        "rules": [],
+        "weight": 0.25,
+        "metadata": {
+          "sample_response": "Score: 6/10\nReason: Tone stays on-brand, but it repeats the refund policy twice and contradicts an earlier eligibility statement.\n"
+        }
+      },
+      {
+        "name": "response_clarity",
+        "type": "llm_judge",
+        "enabled": true,
+        "model": "gpt-5-mini",
+        "prompt_template": "# Response Clarity Review\n# Provide a JSON-friendly rating from 1-10 inclusive.\n# Respond using the format: 'Score: <number>/10\\nReason: <short explanation>'\nSystem role:\nYou review answers for clarity, actionable direction, and persona-fit presentation.\n\nContext:\n- Persona: {persona}\n- User input: {input}\n- Agent output: {output}\n- Supporting data or attachments: {supporting_data}\n\nTask:\nJudge whether the response is easy to understand and provides actionable next steps.\nConsider:\n1. Clarity of language (avoids jargon, uses organized structure, highlights key decisions).\n2. Completeness of steps or explanations, including concrete instructions or escalation paths.\n3. Tone appropriateness for the persona, addressing confidence level and empathy needs.\n4. Does the answer avoid redundant repetition while remaining specific and helpful?\n\nMention the sentence, bullet, or missing detail that most drives your score.\n\nScore each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on response clarity when judging.\nOutput format:\nScore: <number>/10\nReason: <one sentence summary>\nOnly produce the score and reason lines.\n",
+        "rules": [],
+        "weight": 0.2,
+        "metadata": {
+          "sample_response": "Score: 5/10\nReason: Structure is readable, but it repeats the same reassurance twice and omits next-step instructions.\n"
+        }
+      },
+      {
+        "name": "information_completeness",
+        "type": "llm_judge",
+        "enabled": false,
+        "model": "gpt-5-mini",
+        "prompt_template": "# Information Completeness Review\n# Provide a JSON-friendly rating from 1-10 inclusive.\n# Respond using the format: 'Score: <number>/10\\nReason: <short explanation>'\nSystem role:\nYou verify that responses include all critical information the user needs to succeed.\n\nContext:\n- Persona: {persona}\n- User request: {input}\n- Agent output: {output}\n- Required artifacts or data: {requirements}\n- Knowledge-base guidance or SOPs: {knowledge_base}\n\nTask:\nAssess whether the response covers all required facts, steps, and caveats.\nConsider:\n1. Does the agent supply each required data point or link listed in the requirements?\n2. Are disclaimers, prerequisites, risks, or service limits clearly stated?\n3. Would the user need additional clarification, or is follow-up content missing?\n4. Does the answer stay focused and avoid filler repetition while delivering specifics?\n\nHighlight the missing artifact or redundant section when lowering the score.\n\nScore each criterion from **1 (very poor)** to **10 (excellent)**. A score of 7 or higher indicates the agent met the expectation. Focus on information completeness when judging.\nOutput format:\nScore: <number>/10\nReason: <one sentence summary>\nOnly produce the score and reason lines.\n",
+        "rules": [],
+        "weight": 0.1,
+        "metadata": {
+          "sample_response": "Score: 4/10\nReason: Mentions the entitlement check but skips the billing URL and repeats the SLA paragraph verbatim.\n"
+        }
+      }
+    ],
+    "output_directory": "experiments",
+    "save_traces": true,
+    "save_aggregated_metrics": true,
+    "multi_turn": {
+      "enabled": true,
+      "max_turns": 10,
+      "auto_approve_tools": true,
+      "supervisor": {
+        "provider": "mock",
+        "model": "gpt-5-mini",
+        "temperature": 0.2,
+        "system_prompt": "You supervise an AI assistant supporting customers.\nReview the entire transcript and decide whether to continue.\nWhen continuing, craft the next user message consistent with the persona.\nWhen terminating, explain the reason and provide any closing notes.\n",
+        "metadata": {
+          "scripted_questions": [
+            "Am i allowed to update my flight to something sooner? I want to leave later today.",
+            "Update my flight to sometime next week then",
+            "The next available option is great",
+            "what about lodging and transportation?",
+            "Yeah i think i'd like an affordable hotel for my week-long stay (7 days). And I'll want to rent a car.",
+            "OK could you place a reservation for your recommended hotel? It sounds nice.",
+            "yes go ahead and book anything that's moderate expense and has availability.",
+            "OK great pick one and book it for my second day there."
+          ],
+          "mock_decision": "terminate",
+          "mock_reason": "script_complete",
+          "mock_closing": "Thanks for the help. I have no further questions."
+        }
+      }
+    },
+    "tags": [
+      "simulation",
+      "testing"
+    ],
+    "metadata": {
+      "team": "development",
+      "environment": "local",
+      "service_context": ""
+    }
+  },
+  "results": {
+    "total_runs": 6,
+    "successful": 6,
+    "failed": 0,
+    "success_rate": 1.0,
+    "avg_duration_ms": 318573.1199979782,
+    "duration_seconds": 1912.593642950058
+  }
+}

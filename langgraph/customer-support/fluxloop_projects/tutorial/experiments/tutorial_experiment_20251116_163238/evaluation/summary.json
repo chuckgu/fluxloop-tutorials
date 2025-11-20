@@ -2,7 +2,7 @@
   "total_traces": 6,
   "passed_traces": 0,
   "pass_rate": 0.0,
-  "average_score": 0.5741441578582319,
+  "average_score": 0.5540985292249941,
   "threshold": 0.7,
   "aggregate_method": "weighted_sum",
   "evaluators": [
@@ -21,8 +21,8 @@
       "count": 6
     },
     "token_budget": {
-      "average": 0.7573649471493911,
-      "min": 0.3490188208399138,
+      "average": 0.9787578420166307,
+      "min": 0.8725470520997844,
       "max": 1.0,
       "count": 6
     },
@@ -33,20 +33,20 @@
       "count": 6
     },
     "intent_recognition": {
-      "average": 0.15000000000000002,
+      "average": 0.16666666666666669,
       "min": 0.1,
       "max": 0.2,
       "count": 6
     },
     "response_consistency": {
-      "average": 0.43333333333333335,
+      "average": 0.25,
       "min": 0.2,
-      "max": 0.9,
+      "max": 0.4,
       "count": 6
     },
     "response_clarity": {
-      "average": 0.5833333333333334,
-      "min": 0.3,
+      "average": 0.45,
+      "min": 0.2,
       "max": 0.8,
       "count": 6
     }
@@ -54,12 +54,12 @@
   "persona_breakdown": {
     "novice_user": {
       "count": 3,
-      "average_score": 0.5997317145586908,
+      "average_score": 0.5513888888888889,
       "pass_rate": 0.0
     },
     "expert_user": {
       "count": 3,
-      "average_score": 0.548556601157773,
+      "average_score": 0.5568081695610992,
       "pass_rate": 0.0
     }
   },
@@ -69,39 +69,39 @@
       6
     ],
     [
-      "total tokens 86266 exceeds budget 40000",
+      "The agent failed to address the user's question about their flight time or how to check it, instead asking unrelated booking clarifications and assuming a \"second day\" date without providing any flight-checking steps or retrieving flight info.",
       1
     ],
     [
-      "The agent completely missed the user's intent about checking a flight time—instead it launched into unrelated booking questions (which options, assumed \"second day\" date, number of people, preferences) and offered defaults, failing to answer or guide how to check flight details.",
+      "The assistant's reply is inconsistent with the user's question about flight time—it launches an unrelated booking flow, fails to explain how to check a flight, and even assumes an arrival date of 2025-11-17 without justification.",
       1
     ],
     [
-      "Mostly coherent and asks useful clarifying questions, but it presumptively sets \"second day\" to 2025-11-17 using unspecified arrival info (\"I’ll use your arrival info to set the “second day” as 2025-11-17 — is that correct?\") and does not answer the user's flight-time question.",
+      "The reply is clear about booking follow-ups but fails to answer the user's flight-time question—the opening line \"OK great pick one and book it for my second day there.\" (and the assumption \"I’ll use your arrival info... 2025-11-17\") is off-topic and the assistant omits any concrete steps for checking flight time.",
       1
     ],
     [
-      "The assistant's numbered questions are clear and well-structured, but it never answers the user's flight-time question or explains how to check flight status (missing directions like checking your confirmation email, airline app/website with confirmation or e-ticket number), so the response is off-topic.",
+      "The agent completely missed the user's request—its reply is about booking a tour (\"I’ll pick a popular option and book it\") rather than providing the flight departure time or actionable ways to check it without a booking/reference number (e.g., search by name/email, airline website/app, call the airline or airport).",
       1
     ],
     [
-      "The agent completely missed the user's intent—asking about flight departure time and how to check it without a booking/reference number—responding instead with unrelated tour-booking steps and questions and failing to provide any practical options (airline/last-name look-up, airport flight-status board, mobile app, contact airline) to find the flight time.",
+      "The reply is irrelevant and inconsistent with the user's question — it focuses on booking a tour and even asserts a flight arrival date (\"that would be 2025-11-17, since your flight arrives 2025-11-16\") instead of telling the user how to find their flight departure time without a booking/reference number.",
       1
     ],
     [
-      "The assistant's reply focuses on booking a tour (\"I can do that — I’ll pick a popular option and book it for the second day of your trip...\") instead of answering the user's question about how to find a flight departure time without a booking/reference number.",
+      "The assistant's numbered confirmation questions are clear, organized, and actionable, but it omits key booking details—how payment, confirmation, and cancellation will be handled (missing detail).",
       1
     ],
     [
-      "Clear, concise numbered confirmations that give specific next steps (items 1–4) and a direct call to reply, but the reply is off-topic for the user's flight question and omits booking/payment/cancellation details a novice might need.",
+      "The agent completely misses the user's intent—asking how to find their flight departure time—and instead provides unrelated tour-booking clarifications (e.g., \"second day there\", party size, time preferences) without answering the flight-time question or giving steps (check itinerary, airline app, confirmation email, airport departures).",
       1
     ],
     [
-      "total tokens 54683 exceeds budget 40000",
+      "The assistant ignored the user's question about finding flight departure times and instead proceeded with unrelated booking clarifications, making unwarranted assumptions such as \"By 'second day there' you mean 2025-11-17 (your flight arrives 2025-11-16),\" which is not supported by the conversation.",
       1
     ],
     [
-      "Agent failed to address the user's question about finding their flight departure time — instead it launched into unrelated booking clarifications and gave no guidance, steps, or acknowledgement of the user's novice status.",
+      "The assistant fails to answer the user's question about finding their flight time and instead asks unrelated booking clarifications—the missing actionable detail (e.g., \"check your confirmation email, airline website/app, or use your booking reference\") and the bullet list of booking questions most drive this low score.",
       1
     ]
   ],
@@ -118,23 +118,23 @@
     "quality": {
       "intent_recognition": {
         "met": false,
-        "average_score": 0.15000000000000002,
+        "average_score": 0.16666666666666669,
         "threshold": 0.7,
         "pass_rate": 0.0,
         "trace_count": 6
       },
       "response_consistency": {
         "met": false,
-        "average_score": 0.43333333333333335,
+        "average_score": 0.25,
         "threshold": 0.7,
-        "pass_rate": 0.3333333333333333,
+        "pass_rate": 0.0,
         "trace_count": 6
       },
       "response_clarity": {
         "met": false,
-        "average_score": 0.5833333333333334,
+        "average_score": 0.45,
         "threshold": 0.7,
-        "pass_rate": 0.5,
+        "pass_rate": 0.3333333333333333,
         "trace_count": 6
       }
     },
